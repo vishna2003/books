@@ -1,11 +1,11 @@
 'use strict';
 
 /**
- * Share application.
+ * Sismics Books application.
  */
-var App = angular.module('share',
+var App = angular.module('books',
     // Dependencies
-    ['ui.state', 'ui.bootstrap', 'restangular', 'ngSanitize', 'ngMobile']
+    ['ui.state', 'ui.route', 'restangular', 'ngSanitize', 'ngMobile']
   )
 
 /**
@@ -18,33 +18,36 @@ var App = angular.module('share',
     url: '',
     views: {
       'page': {
-        templateUrl: 'partial/share/main.html',
+        templateUrl: 'partial/main.html',
         controller: 'Main'
       }
     }
   })
-  .state('share', {
-    url: '/share/:documentId/:shareId',
+  .state('book', {
+    url: '/book',
+    abstract: true,
     views: {
       'page': {
-        templateUrl: 'partial/share/share.html',
-        controller: 'Share'
+        templateUrl: 'partial/book.html',
+        controller: 'Book'
       }
     }
   })
-    .state('share.file', {
-      url: '/file/:fileId',
+    .state('book.default', {
+      url: '',
       views: {
-        'file': {
-          controller: 'FileView'
+        'book': {
+          templateUrl: 'partial/book.default.html',
+          controller: 'BookDefault'
         }
       }
     })
-  .state('403', {
-    url: '/403',
+  .state('login', {
+    url: '/login',
     views: {
       'page': {
-        templateUrl: 'partial/share/403.html'
+        templateUrl: 'partial/login.html',
+        controller: 'Login'
       }
     }
   });

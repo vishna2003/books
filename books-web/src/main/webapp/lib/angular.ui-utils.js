@@ -862,7 +862,7 @@ angular.module('ui.mask', [])
             return 0;
           }
 
-          // https://developer.mozilla.org/en-US/books/JavaScript/Reference/Global_Objects/Array/indexOf
+          // https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Array/indexOf
           if (!Array.prototype.indexOf) {
             Array.prototype.indexOf = function (searchElement /*, fromIndex */){
               "use strict";

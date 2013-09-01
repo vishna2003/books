@@ -8361,7 +8361,7 @@ function $RootScopeProvider(){
      *
      * Here is a simple scope snippet to show how you can interact with the scope.
      * <pre>
-     * <file src="./test/ng/rootScopeSpec.js" tag="books1" />
+     * <file src="./test/ng/rootScopeSpec.js" tag="docs1" />
      * </pre>
      *
      * # Inheritance
@@ -9896,7 +9896,7 @@ function $HttpProvider() {
      *    - **withCredentials** - `{boolean}` - whether to to set the `withCredentials` flag on the
      *      XHR object. See {@link https://developer.mozilla.org/en/http_access_control#section_5
      *      requests with credentials} for more information.
-     *    - **responseType** - `{string}` - see {@link https://developer.mozilla.org/en-US/books/DOM/XMLHttpRequest#responseType requestType}.
+     *    - **responseType** - `{string}` - see {@link https://developer.mozilla.org/en-US/docs/DOM/XMLHttpRequest#responseType requestType}.
      *
      * @returns {HttpPromise} Returns a {@link ng.$q promise} object with the
      *   standard `then` method and two http specific methods: `success` and `error`. The `then`
@@ -13838,7 +13838,7 @@ var ngBindTemplateDirective = ['$interpolate', function($interpolate) {
  * {@link ngSanitize.directive:ngBindHtml ngBindHtml} directive is too
  * restrictive and when you absolutely trust the source of the content you are binding to.
  *
- * See {@link ngSanitize.$sanitize $sanitize} books for examples.
+ * See {@link ngSanitize.$sanitize $sanitize} docs for examples.
  *
  * @element ANY
  * @param {expression} ngBindHtmlUnsafe {@link guide/expression Expression} to evaluate.

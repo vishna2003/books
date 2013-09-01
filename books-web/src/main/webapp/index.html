@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="shortcut icon" href="favicon.png" />
     <link rel="stylesheet" href="style/bootstrap.css" type="text/css" />
-    <link rel="stylesheet" href="style/colorpicker.css" type="text/css" />
     <link rel="stylesheet/less" href="style/main.less" type="text/css" />
     <script>
       less = {
@@ -18,43 +17,21 @@
       };
     </script>
     <script src="lib/jquery.js" type="text/javascript"></script>
-    <script src="lib/jquery.ui.js" type="text/javascript"></script>
     <script src="lib/less.js" type="text/javascript"></script>
     <script src="lib/underscore.js" type="text/javascript"></script>
-    <script src="lib/colorpicker.js" type="text/javascript"></script>
     <script src="lib/angular/angular.js" type="text/javascript"></script>
     <script src="lib/angular/angular-sanitize.js" type="text/javascript"></script>
     <script src="lib/angular/angular-mobile.js" type="text/javascript"></script>
     <script src="lib/angular.ui-router.js" type="text/javascript"></script>
-    <script src="lib/angular.ui-bootstrap.js" type="text/javascript"></script>
     <script src="lib/angular.ui-utils.js" type="text/javascript"></script>
-    <script src="lib/angular.ui-sortable.js" type="text/javascript"></script>
     <script src="lib/angular.restangular.js" type="text/javascript"></script>
-    <script src="lib/angular.colorpicker.js" type="text/javascript"></script>
-    <script src="app/books/app.js" type="text/javascript"></script>
-    <script src="app/books/controller/Main.js" type="text/javascript"></script>
-    <script src="app/books/controller/Document.js" type="text/javascript"></script>
-    <script src="app/books/controller/DocumentDefault.js" type="text/javascript"></script>
-    <script src="app/books/controller/DocumentEdit.js" type="text/javascript"></script>
-    <script src="app/books/controller/DocumentView.js" type="text/javascript"></script>
-    <script src="app/books/controller/FileView.js" type="text/javascript"></script>
-    <script src="app/books/controller/Login.js" type="text/javascript"></script>
-    <script src="app/books/controller/Tag.js" type="text/javascript"></script>
-    <script src="app/books/controller/Navigation.js" type="text/javascript"></script>
-    <script src="app/books/controller/Settings.js" type="text/javascript"></script>
-    <script src="app/books/controller/SettingsDefault.js" type="text/javascript"></script>
-    <script src="app/books/controller/SettingsAccount.js" type="text/javascript"></script>
-    <script src="app/books/controller/SettingsSession.js" type="text/javascript"></script>
-    <script src="app/books/controller/SettingsLog.js" type="text/javascript"></script>
-    <script src="app/books/controller/SettingsUser.js" type="text/javascript"></script>
-    <script src="app/books/controller/SettingsUserEdit.js" type="text/javascript"></script>
-    <script src="app/books/service/User.js" type="text/javascript"></script>
-    <script src="app/books/service/Tag.js" type="text/javascript"></script>
-    <script src="app/books/filter/Newline.js" type="text/javascript"></script>
-    <script src="app/books/filter/Shorten.js" type="text/javascript"></script>
-    <script src="app/books/directive/File.js" type="text/javascript"></script>
-    <script src="app/books/directive/SelectTag.js" type="text/javascript"></script>
-    <script src="app/books/directive/InlineEdit.js" type="text/javascript"></script>
+    <script src="app/app.js" type="text/javascript"></script>
+    <script src="app/controller/Main.js" type="text/javascript"></script>
+    <script src="app/controller/Book.js" type="text/javascript"></script>
+    <script src="app/controller/BookDefault.js" type="text/javascript"></script>
+    <script src="app/controller/Login.js" type="text/javascript"></script>
+    <script src="app/controller/Navigation.js" type="text/javascript"></script>
+    <script src="app/service/User.js" type="text/javascript"></script>
   </head>
   <body>
     <div class="navbar" ng-controller="Navigation">
@@ -67,17 +44,10 @@
           <a class="brand hidden-phone" href="#">Sismics Books</a>
           
           <ul class="nav" ng-show="!userInfo.anonymous">
-            <li ng-class="{active: $uiRoute}" ui-route="/document.*"><a href="#/document"><span class="icon-book"></span> Documents</a></li>
-            <li ng-class="{active: $uiRoute}" ui-route="/tag.*"><a href="#/tag"><span class="icon-tag"></span> Tags</a></li>
+            <li ng-class="{active: $uiRoute}" ui-route="/document.*"><a href="#/document"><span class="icon-book"></span> Books</a></li>
           </ul>
           
           <ul class="nav pull-right" ng-show="!userInfo.anonymous">
-            <li ng-show="errorNumber > 0">
-                <a href="#/settings/log" ng-click="openLogs()" class="nav-text-error">
-                  <span class="icon-warning-sign"></span> {{ errorNumber }} new error{{ errorNumber > 1 ? 's' : '' }}
-                </a>
-            </li>
-            <li ng-class="{active: $uiRoute}" ui-route="/settings.*"><a href="#/settings/account"><span class="icon-cog"></span><span class="hidden-phone"> Settings</span></a></li>
             <li><a href="#" ng-click="logout($event)"><span class="icon-off"></span><span class="hidden-phone"> Logout</span></a></li>
           </ul>
         </div>

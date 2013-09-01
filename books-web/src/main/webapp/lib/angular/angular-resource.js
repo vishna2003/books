@@ -97,7 +97,7 @@
  *     XHR object. See {@link https://developer.mozilla.org/en/http_access_control#section_5
  *     requests with credentials} for more information.
  *   - **`responseType`** - `{string}` - see {@link
- *     https://developer.mozilla.org/en-US/books/DOM/XMLHttpRequest#responseType requestType}.
+ *     https://developer.mozilla.org/en-US/docs/DOM/XMLHttpRequest#responseType requestType}.
  *
  * @returns {Object} A resource "class" object with methods for the default set of resource actions
  *   optionally extended with custom `actions`. The default set contains these actions:

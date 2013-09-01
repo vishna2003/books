@@ -408,7 +408,7 @@ angular.module('ngSanitize', []).value('$sanitize', $sanitize);
  * Creates a binding that will sanitize the result of evaluating the `expression` with the
  * {@link ngSanitize.$sanitize $sanitize} service and innerHTML the result into the current element.
  *
- * See {@link ngSanitize.$sanitize $sanitize} books for examples.
+ * See {@link ngSanitize.$sanitize $sanitize} docs for examples.
  *
  * @element ANY
  * @param {expression} ngBindHtml {@link guide/expression Expression} to evaluate.
