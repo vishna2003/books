@@ -1,0 +1,140 @@
+// Documents list
+.table-documents {
+	thead th {
+    cursor: pointer;
+    width: 50%;
+	}
+	
+	tbody tr {
+    cursor: pointer;
+	}
+	
+	tbody td {
+    vertical-align: middle;
+	}
+	
+	.cell-tags {
+    padding: 2px;
+    
+    .label {
+      margin-left: 2px;
+      
+      .full {
+        display: none;
+      }
+    }
+    
+    &:hover {
+      .tags {
+        position: absolute;
+        margin-top: -10px;
+        
+        .label {
+          .full {
+            display: inline;
+          }
+          
+          .shorten {
+            display: none;
+          }
+        }
+      }
+    }
+	}
+}
+
+// $http loader
+.loader {
+	position: relative;
+	top: -2px;
+	
+	&.hide {
+	  visibility: hidden;
+	}
+}
+
+// Tags list
+.table-tags {
+	tbody td {
+    vertical-align: middle;
+	}
+}
+
+// Users list
+.table-users {
+	tbody tr {
+    cursor: pointer;
+  }
+}
+
+// Logs list
+.table-logs {
+	tbody tr td {
+    &:first-child {
+      white-space: nowrap;
+    }
+    
+    .cell-message {
+      word-wrap: break-word;
+    }
+	}
+}
+
+// File thumbnails
+.thumbnail-file {
+	cursor: pointer;
+}
+
+.thumbnails-file [class*="span"]:first-child {
+    margin-left: 2.5641%;
+}
+
+.collapse[style="height: auto;"] {
+	overflow: visible;
+}
+
+// Fields bound to datepicker
+input[readonly][datepicker-popup] {
+	cursor: pointer;
+}
+
+// Share link
+input[readonly].share-link {
+  cursor: pointer;
+}
+
+// Inline edition
+.inline-edit {
+	cursor: pointer;
+	display: block;
+	
+	span {
+    display: block;
+	}
+	
+	input {
+	  display: none;
+	  margin-bottom: 0;
+	}
+	
+	&.active {
+    span {
+		  display: none;
+		}
+		
+		input {
+		  display: inline-block;
+		}
+	}
+}
+
+// Pagination
+.pagination {
+	ul > li {
+    cursor: pointer;
+	}
+}
+
+.nav-text-error {
+  color: #b94a48 !important;
+}
