@@ -1,5 +1,9 @@
-- Book and UserBook entities
+- Book entity : title, author, published date, description, isbn 10, isbn 13, page count, language
+- UserBook entity : added date, deleted date, book fk, user fk, read date 
 - Book add (client/server)
 - Book list (client/server)
 - Barcode scanning for ISBN (cf. https://code.google.com/p/zxing/wiki/ScanningFromWebPages)
 - Google API to fetch book data (cf. https://developers.google.com/books/docs/v1/getting_started)
+- Fallback to isbndb, Amazon API, ...
+- Share book lists
+- Goodreads import

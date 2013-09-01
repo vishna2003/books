@@ -25,7 +25,6 @@ var App = angular.module('books',
   })
   .state('book', {
     url: '/book',
-    abstract: true,
     views: {
       'page': {
         templateUrl: 'partial/book.html',
@@ -33,15 +32,6 @@ var App = angular.module('books',
       }
     }
   })
-    .state('book.default', {
-      url: '',
-      views: {
-        'book': {
-          templateUrl: 'partial/book.default.html',
-          controller: 'BookDefault'
-        }
-      }
-    })
   .state('login', {
     url: '/login',
     views: {

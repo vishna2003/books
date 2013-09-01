@@ -8,7 +8,7 @@ App.controller('Main', function($scope, $rootScope, $state, User) {
     if (data.anonymous) {
       $state.transitionTo('login');
     } else {
-      $state.transitionTo('book.default');
+      $state.transitionTo('book');
     }
   });
 });
