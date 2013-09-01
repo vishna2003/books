@@ -1,0 +1,5 @@
+- Book and UserBook entities
+- Book add (client/server)
+- Book list (client/server)
+- Barcode scanning for ISBN (cf. https://code.google.com/p/zxing/wiki/ScanningFromWebPages)
+- Google API to fetch book data (cf. https://developers.google.com/books/docs/v1/getting_started)
