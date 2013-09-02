@@ -12,5 +12,7 @@
     <class>com.sismics.books.core.model.jpa.Locale</class>
     <class>com.sismics.books.core.model.jpa.User</class>
     <class>com.sismics.books.core.model.jpa.RoleBaseFunction</class>
+    <class>com.sismics.books.core.model.jpa.Book</class>
+    <class>com.sismics.books.core.model.jpa.UserBook</class>
   </persistence-unit>
 </persistence>

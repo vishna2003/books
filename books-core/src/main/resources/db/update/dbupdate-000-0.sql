@@ -6,11 +6,15 @@ create memory table T_LOCALE ( LOC_ID_C varchar(10) not null, primary key (LOC_I
 create memory table T_USER ( USE_ID_C varchar(36) not null, USE_IDLOCALE_C varchar(10) not null, USE_IDROLE_C varchar(36) not null, USE_USERNAME_C varchar(50) not null, USE_PASSWORD_C varchar(60) not null, USE_EMAIL_C varchar(100) not null, USE_THEME_C varchar(100) not null, USE_FIRSTCONNECTION_B bit not null, USE_CREATEDATE_D datetime not null, USE_DELETEDATE_D datetime, primary key (USE_ID_C) );
 create memory table T_ROLE ( ROL_ID_C varchar(36) not null, ROL_NAME_C varchar(36) not null, ROL_CREATEDATE_D datetime not null, ROL_DELETEDATE_D datetime, primary key (ROL_ID_C) );
 create memory table T_ROLE_BASE_FUNCTION ( RBF_ID_C varchar(36) not null, RBF_IDROLE_C varchar(36) not null, RBF_IDBASEFUNCTION_C varchar(20) not null, RBF_CREATEDATE_D datetime not null, RBF_DELETEDATE_D datetime, primary key (RBF_ID_C) );
+create cached table T_BOOK ( BOK_ID_C varchar(36) not null, BOK_TITLE_C varchar(255) not null, BOK_SUBTITLE_C varchar(255), BOK_AUTHOR_C varchar(255) not null, BOK_DESCRIPTION_C varchar(4000), BOK_ISBN10_C varchar(10), BOK_ISBN13_C varchar(13), BOK_PAGECOUNT_N integer, BOK_LANGUAGE_C varchar(2) not null, BOK_PUBLISHDATE_D datetime, primary key (BOK_ID_C) );
+create cached table T_USERBOOK ( UBK_ID_C varchar(36) not null, UBK_IDBOOK_C varchar(36) not null, UBK_IDUSER_C varchar(36) not null, UBK_CREATEDATE_D datetime not null, UBK_DELETEDATE_D datetime, UBK_READDATE_D datetime, primary key (UBK_ID_C) );
 alter table T_AUTHENTICATION_TOKEN add constraint FK_AUT_IDUSER_C foreign key (AUT_IDUSER_C) references T_USER (USE_ID_C) on delete restrict on update restrict;
 alter table T_USER add constraint FK_USE_IDLOCALE_C foreign key (USE_IDLOCALE_C) references T_LOCALE (LOC_ID_C) on delete restrict on update restrict;
 alter table T_USER add constraint FK_USE_IDROLE_C foreign key (USE_IDROLE_C) references T_ROLE (ROL_ID_C) on delete restrict on update restrict;
 alter table T_ROLE_BASE_FUNCTION add constraint FK_RBF_IDROLE_C foreign key (RBF_IDROLE_C) references T_ROLE (ROL_ID_C) on delete restrict on update restrict;
 alter table T_ROLE_BASE_FUNCTION add constraint FK_RBF_IDBASEFUNCTION_C foreign key (RBF_IDBASEFUNCTION_C) references T_BASE_FUNCTION (BAF_ID_C) on delete restrict on update restrict;
+alter table T_USERBOOK add constraint FK_UBK_IDBOOK_C foreign key (UBK_IDBOOK_C) references T_BOOK (BOK_ID_C) on delete restrict on update restrict;
+alter table T_USERBOOK add constraint FK_UBK_IDUSER_C foreign key (UBK_IDUSER_C) references T_USER (USE_ID_C) on delete restrict on update restrict;
 insert into T_CONFIG(CFG_ID_C, CFG_VALUE_C) values('DB_VERSION', '0');
 insert into T_CONFIG(CFG_ID_C, CFG_VALUE_C) values('LUCENE_DIRECTORY_STORAGE', 'FILE');
 insert into T_BASE_FUNCTION(BAF_ID_C) values('ADMIN');

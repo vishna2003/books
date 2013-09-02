@@ -17,7 +17,7 @@ import org.junit.Test;
  */
 public class TestAppResource extends BaseJerseyTest {
     /**
-     * Test the API resource.
+     * Test the app resource.
      * 
      * @throws JSONException
      */
