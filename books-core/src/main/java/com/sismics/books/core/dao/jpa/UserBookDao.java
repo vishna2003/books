@@ -1,12 +1,25 @@
 package com.sismics.books.core.dao.jpa;
 
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
+import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
+import com.sismics.books.core.dao.jpa.criteria.UserBookCriteria;
+import com.sismics.books.core.dao.jpa.dto.UserBookDto;
 import com.sismics.books.core.model.jpa.UserBook;
+import com.sismics.books.core.util.jpa.PaginatedList;
+import com.sismics.books.core.util.jpa.PaginatedLists;
+import com.sismics.books.core.util.jpa.QueryParam;
+import com.sismics.books.core.util.jpa.SortCriteria;
 import com.sismics.util.context.ThreadLocalContext;
 
 
@@ -67,5 +80,59 @@ public class UserBookDao {
         } catch (NoResultException e) {
             return null;
         }
+    }
+    
+    /**
+     * Searches user books by criteria.
+     * 
+     * @param paginatedList List of user books (updated by side effects)
+     * @param criteria Search criteria
+     * @return List of user books
+     * @throws Exception 
+     */
+    public void findByCriteria(PaginatedList<UserBookDto> paginatedList, UserBookCriteria criteria, SortCriteria sortCriteria) throws Exception {
+        Map<String, Object> parameterMap = new HashMap<String, Object>();
+        List<String> criteriaList = new ArrayList<String>();
+        
+        StringBuilder sb = new StringBuilder("select ub.UBK_ID_C c0, b.BOK_TITLE_C c1, b.BOK_SUBTITLE_C c2, b.BOK_AUTHOR_C c3, b.BOK_LANGUAGE_C c4, b.BOK_PUBLISHDATE_D c5, ub.UBK_CREATEDATE_D c6, ub.UBK_READDATE_D c7");
+        sb.append(" from T_BOOK b ");
+        sb.append(" join T_USERBOOK ub on ub.UBK_IDBOOK_C = b.BOK_ID_C and ub.UBK_IDUSER_C = :userId and ub.UBK_DELETEDATE_D is null ");
+        
+        // Adds search criteria
+        if (!Strings.isNullOrEmpty(criteria.getSearch())) {
+            criteriaList.add(" (b.BOK_TITLE_C like :search or b.BOK_SUBTITLE_C like :search or b.BOK_AUTHOR_C like :search) ");
+            parameterMap.put("search", "%" + criteria.getSearch() + "%");
+        }
+        parameterMap.put("userId", criteria.getUserId());
+        
+        if (!criteriaList.isEmpty()) {
+            sb.append(" where ");
+            sb.append(Joiner.on(" and ").join(criteriaList));
+        }
+        
+        // Perform the search
+        QueryParam queryParam = new QueryParam(sb.toString(), parameterMap);
+        List<Object[]> l = PaginatedLists.executePaginatedQuery(paginatedList, queryParam, sortCriteria);
+        
+        // Assemble results
+        List<UserBookDto> userBookDtoList = new ArrayList<UserBookDto>();
+        for (Object[] o : l) {
+            int i = 0;
+            UserBookDto userBookDto = new UserBookDto();
+            userBookDto.setId((String) o[i++]);
+            userBookDto.setTitle((String) o[i++]);
+            userBookDto.setSubtitle((String) o[i++]);
+            userBookDto.setAuthor((String) o[i++]);
+            userBookDto.setLanguage((String) o[i++]);
+            userBookDto.setPublishTimestamp(((Timestamp) o[i++]).getTime());
+            userBookDto.setCreateTimestamp(((Timestamp) o[i++]).getTime());
+            Timestamp readTimestamp = (Timestamp) o[i++];
+            if (readTimestamp != null) {
+                userBookDto.setReadTimestamp(readTimestamp.getTime());
+            }
+            userBookDtoList.add(userBookDto);
+        }
+
+        paginatedList.setResultList(userBookDtoList);
     }
 }

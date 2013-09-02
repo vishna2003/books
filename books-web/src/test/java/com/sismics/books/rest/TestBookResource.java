@@ -4,6 +4,7 @@ import java.io.InputStream;
 
 import junit.framework.Assert;
 
+import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
 import org.junit.Test;
 
@@ -65,5 +66,15 @@ public class TestBookResource extends BaseJerseyTest {
         InputStream is = response.getEntityInputStream();
         byte[] fileBytes = ByteStreams.toByteArray(is);
         Assert.assertEquals(14406, fileBytes.length);
+        
+        // List all books
+        bookResource = resource().path("/book/list");
+        bookResource.addFilter(new CookieAuthenticationFilter(book1Token));
+        MultivaluedMapImpl getParams = new MultivaluedMapImpl();
+        response = bookResource.queryParams(getParams).get(ClientResponse.class);
+        json = response.getEntity(JSONObject.class);
+        Assert.assertEquals(Status.OK, Status.fromStatusCode(response.getStatus()));
+        JSONArray books = json.getJSONArray("books");
+        Assert.assertTrue(books.length() == 1);
     }
 }

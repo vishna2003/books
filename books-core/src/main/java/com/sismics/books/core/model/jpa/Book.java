@@ -73,7 +73,7 @@ public class Book {
     private String language;
     
     /**
-     * Published date.
+     * Publication date.
      */
     @Column(name = "BOK_PUBLISHDATE_D", nullable = false)
     private Date publishDate;
