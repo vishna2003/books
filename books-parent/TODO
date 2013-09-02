@@ -1,6 +1,6 @@
 - Book add (client/server)
 - Book list (client/server)
-- Google API to fetch book data (cf. https://developers.google.com/books/docs/v1/getting_started)
+- Tags (client/server)
+- Goodreads import
 - Fallback to isbndb, Amazon API, ...
 - Share book lists
-- Goodreads import

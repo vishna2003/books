@@ -52,12 +52,12 @@ public class DirectoryUtil {
     }
     
     /**
-     * Returns the storage directory.
+     * Returns the book covers directory.
      * 
-     * @return Storage directory.
+     * @return Book covers directory.
      */
-    public static File getStorageDirectory() {
-        return getDataSubDirectory("storage");
+    public static File getBookDirectory() {
+        return getDataSubDirectory("book");
     }
     
     /**

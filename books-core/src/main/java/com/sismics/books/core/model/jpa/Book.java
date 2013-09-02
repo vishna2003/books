@@ -70,7 +70,7 @@ public class Book {
      * Language (ISO 639-1).
      */
     @Column(name = "BOK_LANGUAGE_C", nullable = false, length = 2)
-    private Long language;
+    private String language;
     
     /**
      * Published date.
@@ -227,7 +227,7 @@ public class Book {
      * 
      * @return language
      */
-    public Long getLanguage() {
+    public String getLanguage() {
         return language;
     }
 
@@ -236,7 +236,7 @@ public class Book {
      * 
      * @param language language
      */
-    public void setLanguage(Long language) {
+    public void setLanguage(String language) {
         this.language = language;
     }
 

@@ -1,7 +1,5 @@
 package com.sismics.books.core.dao.jpa;
 
-import java.util.UUID;
-
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
@@ -25,14 +23,26 @@ public class BookDao {
      * @throws Exception
      */
     public String create(Book book) {
-        // Create the UUID
-        book.setId(UUID.randomUUID().toString());
-        
         // Create the book
         EntityManager em = ThreadLocalContext.get().getEntityManager();
         em.persist(book);
         
         return book.getId();
+    }
+    
+    /**
+     * Gets a book by its ID.
+     * 
+     * @param id Book ID
+     * @return Book
+     */
+    public Book getById(String id) {
+        EntityManager em = ThreadLocalContext.get().getEntityManager();
+        try {
+            return em.find(Book.class, id);
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
     /**
