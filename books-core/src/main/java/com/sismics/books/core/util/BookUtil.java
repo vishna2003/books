@@ -23,6 +23,7 @@ import com.sismics.books.core.model.jpa.Book;
 
 /**
  * Book utilities.
+ * TODO Use http://openlibrary.org/api/volumes/brief/json/isbn:0345376595 to fallback
  * 
  * @author bgamard
  */
