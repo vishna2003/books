@@ -6,14 +6,18 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.nio.file.Paths;
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -27,10 +31,17 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import com.sismics.books.core.dao.jpa.BookDao;
+import com.sismics.books.core.dao.jpa.TagDao;
 import com.sismics.books.core.dao.jpa.UserBookDao;
+import com.sismics.books.core.dao.jpa.UserDao;
 import com.sismics.books.core.dao.jpa.criteria.UserBookCriteria;
+import com.sismics.books.core.dao.jpa.dto.TagDto;
 import com.sismics.books.core.dao.jpa.dto.UserBookDto;
+import com.sismics.books.core.event.BookImportedEvent;
+import com.sismics.books.core.model.context.AppContext;
 import com.sismics.books.core.model.jpa.Book;
+import com.sismics.books.core.model.jpa.Tag;
+import com.sismics.books.core.model.jpa.User;
 import com.sismics.books.core.model.jpa.UserBook;
 import com.sismics.books.core.util.BookUtil;
 import com.sismics.books.core.util.DirectoryUtil;
@@ -84,20 +95,21 @@ public class BookResource extends BaseResource {
             bookDao.create(book);
         }
         
-        if (book == null) {
-            throw new ClientException("BookNotFound", "Unable to find the book with ISBN " + isbn);
+        // Create the user book if needed
+        UserBookDao userBookDao = new UserBookDao();
+        UserBook userBook = userBookDao.getByBook(book.getId(), principal.getId());
+        if (userBook == null) {
+            userBook = new UserBook();
+            userBook.setUserId(principal.getId());
+            userBook.setBookId(book.getId());
+            userBook.setCreateDate(new Date());
+            userBookDao.create(userBook);
+        } else {
+            throw new ClientException("BookAlreadyAdded", "Book already added");
         }
         
-        // Create the user book
-        UserBookDao userBookDao = new UserBookDao();
-        UserBook userBook = new UserBook();
-        userBook.setUserId(principal.getId());
-        userBook.setBookId(book.getId());
-        userBook.setCreateDate(new Date());
-        String userBookId = userBookDao.create(userBook);
-        
         JSONObject response = new JSONObject();
-        response.put("id", userBookId);
+        response.put("id", userBook.getId());
         return Response.ok().entity(response).build();
     }
     
@@ -139,6 +151,19 @@ public class BookResource extends BaseResource {
         book.put("isbn13", bookDb.getIsbn13());
         book.put("language", bookDb.getLanguage());
         book.put("publish_date", bookDb.getPublishDate().getTime());
+        
+        // Add tags
+        TagDao tagDao = new TagDao();
+        List<TagDto> tagDtoList = tagDao.getByUserBookId(userBookId);
+        List<JSONObject> tags = new ArrayList<>();
+        for (TagDto tagDto : tagDtoList) {
+            JSONObject tag = new JSONObject();
+            tag.put("id", tagDto.getId());
+            tag.put("name", tagDto.getName());
+            tag.put("color", tagDto.getColor());
+            tags.add(tag);
+        }
+        book.put("tags", tags);
         
         return Response.ok().entity(book).build();
     }
@@ -203,6 +228,7 @@ public class BookResource extends BaseResource {
         List<JSONObject> books = new ArrayList<>();
         
         UserBookDao userBookDao = new UserBookDao();
+        TagDao tagDao = new TagDao();
         PaginatedList<UserBookDto> paginatedList = PaginatedLists.create(limit, offset);
         SortCriteria sortCriteria = new SortCriteria(sortColumn, asc);
         UserBookCriteria criteria = new UserBookCriteria();
@@ -224,6 +250,19 @@ public class BookResource extends BaseResource {
             book.put("publish_date", userBookDto.getPublishTimestamp());
             book.put("create_date", userBookDto.getCreateTimestamp());
             book.put("read_date", userBookDto.getReadTimestamp());
+            
+            // Get tags
+            List<TagDto> tagDtoList = tagDao.getByUserBookId(userBookDto.getId());
+            List<JSONObject> tags = new ArrayList<>();
+            for (TagDto tagDto : tagDtoList) {
+                JSONObject tag = new JSONObject();
+                tag.put("id", tagDto.getId());
+                tag.put("name", tagDto.getName());
+                tag.put("color", tagDto.getColor());
+                tags.add(tag);
+            }
+            book.put("tags", tags);
+            
             books.add(book);
         }
         response.put("total", paginatedList.getResultCount());
@@ -251,6 +290,9 @@ public class BookResource extends BaseResource {
         // Validate input data
         ValidationUtil.validateRequired(fileBodyPart, "file");
 
+        UserDao userDao = new UserDao();
+        User user = userDao.getById(principal.getId());
+        
         InputStream in = fileBodyPart.getValueAs(InputStream.class);
         File importFile = null;
         try {
@@ -258,7 +300,10 @@ public class BookResource extends BaseResource {
             importFile = File.createTempFile("books_import", null);
             IOUtils.copy(in, new FileOutputStream(importFile));
             
-            // TODO Import books
+            BookImportedEvent event = new BookImportedEvent();
+            event.setUser(user);
+            event.setImportFile(importFile);
+            AppContext.getInstance().getImportEventBus().post(event);
             
             // Always return ok
             JSONObject response = new JSONObject();
@@ -274,5 +319,53 @@ public class BookResource extends BaseResource {
             }
             throw new ServerException("ImportError", "Error importing books", e);
         }
+    }
+    
+    /**
+     * Updates the user book.
+     * 
+     * @param userBookId User book ID
+     * @return Response
+     * @throws JSONException
+     */
+    @POST
+    @Path("{id: [a-z0-9\\-]+}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response update(
+            @PathParam("id") String userBookId,
+            @FormParam("tags") List<String> tagList) throws JSONException {
+        if (!authenticate()) {
+            throw new ForbiddenClientException();
+        }
+        
+        // Get the user book
+        UserBookDao userBookDao = new UserBookDao();
+        UserBook userBook = userBookDao.getUserBook(userBookId, principal.getId());
+        if (userBook == null) {
+            throw new ClientException("BookNotFound", "Book not found: " + userBookId);
+        }
+        
+        // Update tags
+        if (tagList != null) {
+            TagDao tagDao = new TagDao();
+            Set<String> tagSet = new HashSet<>();
+            Set<String> tagIdSet = new HashSet<>();
+            List<Tag> tagDbList = tagDao.getByUserId(principal.getId());
+            for (Tag tagDb : tagDbList) {
+                tagIdSet.add(tagDb.getId());
+            }
+            for (String tagId : tagList) {
+                if (!tagIdSet.contains(tagId)) {
+                    throw new ClientException("TagNotFound", MessageFormat.format("Tag not found: {0}", tagId));
+                }
+                tagSet.add(tagId);
+            }
+            tagDao.updateTagList(userBookId, tagSet);
+        }
+        
+        // Always return ok
+        JSONObject response = new JSONObject();
+        response.put("id", userBookId);
+        return Response.ok().entity(response).build();
     }
 }

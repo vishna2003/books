@@ -50,7 +50,7 @@ public class TagDao {
     }
 
     /**
-     * Update tags on a book.
+     * Update tags on a user book.
      * 
      * @param userBookId
      * @param tagIdSet
@@ -64,11 +64,11 @@ public class TagDao {
         
         // Create new tag links
         for (String tagId : tagIdSet) {
-            UserBookTag bookTag = new UserBookTag();
-            bookTag.setId(UUID.randomUUID().toString());
-            bookTag.setUserBookId(userBookId);
-            bookTag.setTagId(tagId);
-            em.persist(bookTag);
+            UserBookTag userBookTag = new UserBookTag();
+            userBookTag.setId(UUID.randomUUID().toString());
+            userBookTag.setUserBookId(userBookId);
+            userBookTag.setTagId(tagId);
+            em.persist(userBookTag);
         }
 
     }
@@ -79,9 +79,9 @@ public class TagDao {
      * @return
      */
     @SuppressWarnings("unchecked")
-    public List<TagDto> getByBookId(String userBookId) {
+    public List<TagDto> getByUserBookId(String userBookId) {
         EntityManager em = ThreadLocalContext.get().getEntityManager();
-        StringBuilder sb = new StringBuilder("select t.TAG_ID_C, t.TAG_NAME_C, t.TAG_COLOR_C from T_BOOK_TAG bt ");
+        StringBuilder sb = new StringBuilder("select t.TAG_ID_C, t.TAG_NAME_C, t.TAG_COLOR_C from T_USER_BOOK_TAG bt ");
         sb.append(" join T_TAG t on t.TAG_ID_C = bt.BOT_IDTAG_C ");
         sb.append(" where bt.BOT_IDUSERBOOK_C = :userBookId and t.TAG_DELETEDATE_D is null ");
         sb.append(" order by t.TAG_NAME_C ");

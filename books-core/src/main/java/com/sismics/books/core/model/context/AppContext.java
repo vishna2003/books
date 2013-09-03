@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.EventBus;
+import com.sismics.books.core.listener.async.BookImportAsyncListener;
 import com.sismics.books.core.listener.sync.DeadEventListener;
 import com.sismics.util.EnvironmentUtil;
 
@@ -34,6 +35,11 @@ public class AppContext {
     private EventBus asyncEventBus;
 
     /**
+     * Asynchronous event bus for mass imports.
+     */
+    private EventBus importEventBus;
+    
+    /**
      * Asynchronous executors.
      */
     private List<ExecutorService> asyncExecutorList;
@@ -55,6 +61,9 @@ public class AppContext {
         asyncExecutorList = new ArrayList<ExecutorService>();
         
         asyncEventBus = newAsyncEventBus();
+        
+        importEventBus = newAsyncEventBus();
+        importEventBus.register(new BookImportAsyncListener());
     }
 
     /**
@@ -125,5 +134,14 @@ public class AppContext {
      */
     public EventBus getAsyncEventBus() {
         return asyncEventBus;
+    }
+    
+    /**
+     * Getter of importEventBus.
+     *
+     * @return importEventBus
+     */
+    public EventBus getImportEventBus() {
+        return importEventBus;
     }
 }

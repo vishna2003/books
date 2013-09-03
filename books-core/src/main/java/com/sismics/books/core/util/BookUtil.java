@@ -55,6 +55,7 @@ public class BookUtil {
      * @throws Exception
      */
     public static Book searchBook(String isbn) throws Exception {
+        // TODO Sanitize ISBN (keep only digits)
         URL url = new URL(String.format(Locale.ENGLISH, GOOGLE_BOOKS_SEARCH_FORMAT, isbn.replace("-", "")));
         URLConnection connection = url.openConnection();
         connection.setRequestProperty("Accept-Charset", "utf-8");
@@ -64,8 +65,8 @@ public class BookUtil {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode rootNode = mapper.readValue(inputStream, JsonNode.class);
         ArrayNode items = (ArrayNode) rootNode.get("items");
-        if (items.size() <= 0) {
-            throw new Exception("No book found");
+        if (rootNode.get("totalItems").getIntValue() <= 0) {
+            throw new Exception("No book found for ISBN: " + isbn);
         }
         JsonNode item = items.get(0);
         JsonNode volumeInfo = item.get("volumeInfo");

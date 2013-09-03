@@ -27,7 +27,7 @@
     <com.sun.jersey.version>1.17</com.sun.jersey.version>
     <org.mindrot.jbcrypt>0.3m</org.mindrot.jbcrypt>
     <org.codehaus.jackson.jackson.version>1.7.1</org.codehaus.jackson.jackson.version>
-
+    <net.sf.opencsv.opencsv.version>2.0</net.sf.opencsv.opencsv.version>
     <com.sun.grizzly.version>1.9.18-m</com.sun.grizzly.version>
     <org.hibernate.hibernate.version>4.1.0.Final</org.hibernate.hibernate.version>
     <commons-dbcp.version>1.4</commons-dbcp.version>
@@ -180,6 +180,12 @@
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
         <version>${commons-io.commons-io.version}</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>net.sf.opencsv</groupId>
+        <artifactId>opencsv</artifactId>
+        <version>${net.sf.opencsv.opencsv.version}</version>
       </dependency>
       
       <dependency>

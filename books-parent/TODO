@@ -1,6 +1,6 @@
 - Book add (client)
 - Book list (client)
-- Tags (client/server)
+- Tags (client)
 - Goodreads import
 - Fallback to OpenLibrary, Amazon API
 - Share book lists

@@ -37,16 +37,44 @@ public class TestBookResource extends BaseJerseyTest {
         clientUtil.createUser("book1");
         String book1Token = clientUtil.login("book1");
         
+        // Create a tag
+        WebResource tagResource = resource().path("/tag");
+        tagResource.addFilter(new CookieAuthenticationFilter(book1Token));
+        MultivaluedMapImpl postParams = new MultivaluedMapImpl();
+        postParams.add("name", "Tag3");
+        postParams.add("color", "#ff0000");
+        ClientResponse response = tagResource.put(ClientResponse.class, postParams);
+        Assert.assertEquals(Status.OK, Status.fromStatusCode(response.getStatus()));
+        JSONObject json = response.getEntity(JSONObject.class);
+        String tag3Id = json.optString("id");
+        Assert.assertNotNull(tag3Id);        
+        
         // Add a book
         WebResource bookResource = resource().path("/book");
         bookResource.addFilter(new CookieAuthenticationFilter(book1Token));
-        MultivaluedMapImpl postParams = new MultivaluedMapImpl();
+        postParams = new MultivaluedMapImpl();
         postParams.add("isbn", "9780345376596");
-        ClientResponse response = bookResource.put(ClientResponse.class, postParams);
+        response = bookResource.put(ClientResponse.class, postParams);
         Assert.assertEquals(Status.OK, Status.fromStatusCode(response.getStatus()));
-        JSONObject json = response.getEntity(JSONObject.class);
+        json = response.getEntity(JSONObject.class);
         String book1Id = json.optString("id");
         Assert.assertNotNull(book1Id);
+        
+        // Add the same book (KO)
+        bookResource = resource().path("/book");
+        bookResource.addFilter(new CookieAuthenticationFilter(book1Token));
+        postParams = new MultivaluedMapImpl();
+        postParams.add("isbn", "9780345376596");
+        response = bookResource.put(ClientResponse.class, postParams);
+        Assert.assertEquals(Status.BAD_REQUEST, Status.fromStatusCode(response.getStatus()));
+        
+        // Update a book
+        bookResource = resource().path("/book/" + book1Id);
+        bookResource.addFilter(new CookieAuthenticationFilter(book1Token));
+        postParams = new MultivaluedMapImpl();
+        postParams.add("tags", tag3Id);
+        response = bookResource.post(ClientResponse.class, postParams);
+        Assert.assertEquals(Status.OK, Status.fromStatusCode(response.getStatus()));
         
         // Get the book
         bookResource = resource().path("/book/" + book1Id);
@@ -63,6 +91,7 @@ public class TestBookResource extends BaseJerseyTest {
         Assert.assertEquals("en", json.getString("language"));
         Assert.assertEquals("0345376595", json.getString("isbn10"));
         Assert.assertEquals("9780345376596", json.getString("isbn13"));
+        Assert.assertEquals("Tag3", json.getJSONArray("tags").getJSONObject(0).getString("name"));
 
         // Get the book cover
         bookResource = resource().path("/book/" + book1Id + "/cover");
@@ -104,5 +133,15 @@ public class TestBookResource extends BaseJerseyTest {
         form.bodyPart(fdp);
         response = bookResource.type(MediaType.MULTIPART_FORM_DATA).put(ClientResponse.class, form);
         Assert.assertEquals(Status.OK, Status.fromStatusCode(response.getStatus()));
+        
+        // List all books
+        bookResource = resource().path("/book/list");
+        bookResource.addFilter(new CookieAuthenticationFilter(book1Token));
+        getParams = new MultivaluedMapImpl();
+        response = bookResource.queryParams(getParams).get(ClientResponse.class);
+        json = response.getEntity(JSONObject.class);
+        Assert.assertEquals(Status.OK, Status.fromStatusCode(response.getStatus()));
+        books = json.getJSONArray("books");
+        Assert.assertTrue(books.length() == 11);
     }
 }
