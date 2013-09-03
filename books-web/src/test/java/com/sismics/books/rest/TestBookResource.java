@@ -138,10 +138,11 @@ public class TestBookResource extends BaseJerseyTest {
         bookResource = resource().path("/book/list");
         bookResource.addFilter(new CookieAuthenticationFilter(book1Token));
         getParams = new MultivaluedMapImpl();
+        getParams.add("limit", 15);
         response = bookResource.queryParams(getParams).get(ClientResponse.class);
         json = response.getEntity(JSONObject.class);
         Assert.assertEquals(Status.OK, Status.fromStatusCode(response.getStatus()));
         books = json.getJSONArray("books");
-        Assert.assertTrue(books.length() == 11);
+        Assert.assertEquals(11, books.length());
     }
 }

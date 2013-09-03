@@ -61,6 +61,11 @@ public class BookImportAsyncListener {
                 String [] line;
                 try {
                     while ((line = reader.readNext()) != null) {
+                        if (line[0].equals("Book Id")) {
+                            // Skip header
+                            continue;
+                        }
+                        
                         // Retrieve ISBN number
                         String isbn = Strings.isNullOrEmpty(line[5]) ? line[6] : line[5];
                         if (Strings.isNullOrEmpty(isbn)) {

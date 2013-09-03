@@ -55,8 +55,10 @@ public class BookUtil {
      * @throws Exception
      */
     public static Book searchBook(String isbn) throws Exception {
-        // TODO Sanitize ISBN (keep only digits)
-        URL url = new URL(String.format(Locale.ENGLISH, GOOGLE_BOOKS_SEARCH_FORMAT, isbn.replace("-", "")));
+        // Sanitize ISBN (keep only digits)
+        isbn = isbn.replaceAll("[^\\d]", "");
+        
+        URL url = new URL(String.format(Locale.ENGLISH, GOOGLE_BOOKS_SEARCH_FORMAT, isbn));
         URLConnection connection = url.openConnection();
         connection.setRequestProperty("Accept-Charset", "utf-8");
         connection.setConnectTimeout(10000);
@@ -98,7 +100,7 @@ public class BookUtil {
         
         // Download the thumbnail
         JsonNode imageLinks = volumeInfo.get("imageLinks");
-        if (imageLinks.has("thumbnail")) {
+        if (imageLinks != null && imageLinks.has("thumbnail")) {
             String imageUrl = imageLinks.get("thumbnail").getTextValue();
             URLConnection imageConnection = new URL(imageUrl).openConnection();
             imageConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.62 Safari/537.36");
