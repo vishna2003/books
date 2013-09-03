@@ -80,7 +80,7 @@ public class BookUtil {
             throw new Exception("Author not found");
         }
         book.setAuthor(authors.get(0).getTextValue());
-        book.setDescription(volumeInfo.has("description") ? volumeInfo.get("subtitle").getTextValue() : null);
+        book.setDescription(volumeInfo.has("description") ? volumeInfo.get("description").getTextValue() : null);
         ArrayNode industryIdentifiers = (ArrayNode) volumeInfo.get("industryIdentifiers");
         Iterator<JsonNode> iterator = industryIdentifiers.getElements();
         while (iterator.hasNext()) {

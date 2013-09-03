@@ -3,6 +3,7 @@ package com.sismics.books.rest.resource;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
@@ -20,6 +22,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.io.IOUtils;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -38,6 +41,8 @@ import com.sismics.rest.exception.ClientException;
 import com.sismics.rest.exception.ForbiddenClientException;
 import com.sismics.rest.exception.ServerException;
 import com.sismics.rest.util.ValidationUtil;
+import com.sun.jersey.multipart.FormDataBodyPart;
+import com.sun.jersey.multipart.FormDataParam;
 
 /**
  * Book REST resources.
@@ -225,5 +230,49 @@ public class BookResource extends BaseResource {
         response.put("books", books);
         
         return Response.ok().entity(response).build();
+    }
+    
+    /**
+     * Imports books from Bookreads.
+     * 
+     * @param fileBodyPart File to import
+     * @return Response
+     * @throws JSONException
+     */
+    @PUT
+    @Consumes("multipart/form-data") 
+    @Path("import")
+    public Response importFile(
+            @FormDataParam("file") FormDataBodyPart fileBodyPart) throws JSONException {
+        if (!authenticate()) {
+            throw new ForbiddenClientException();
+        }
+        
+        // Validate input data
+        ValidationUtil.validateRequired(fileBodyPart, "file");
+
+        InputStream in = fileBodyPart.getValueAs(InputStream.class);
+        File importFile = null;
+        try {
+            // Copy the incoming stream content into a temporary file
+            importFile = File.createTempFile("books_import", null);
+            IOUtils.copy(in, new FileOutputStream(importFile));
+            
+            // TODO Import books
+            
+            // Always return ok
+            JSONObject response = new JSONObject();
+            response.put("status", "ok");
+            return Response.ok().entity(response).build();
+        } catch (Exception e) {
+            if (importFile != null) {
+                try {
+                    importFile.delete();
+                } catch (SecurityException e2) {
+                    // NOP
+                }
+            }
+            throw new ServerException("ImportError", "Error importing books", e);
+        }
     }
 }

@@ -1,70 +1,61 @@
 package com.sismics.books.core.model.jpa;
 
-import java.io.Serializable;
-import java.util.Date;
+import com.google.common.base.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-import com.google.common.base.Objects;
+import java.util.Date;
 
 /**
- * User book entity.
+ * Tag.
  * 
  * @author bgamard
  */
 @Entity
-@Table(name = "T_USER_BOOK")
-public class UserBook implements Serializable {
+@Table(name = "T_TAG")
+public class Tag {
     /**
-     * Serial version UID.
-     */
-    private static final long serialVersionUID = 1L;
-    
-    /**
-     * User book ID.
+     * Tag ID.
      */
     @Id
-    @Column(name = "UBK_ID_C", length = 36)
+    @Column(name = "TAG_ID_C", length = 36)
     private String id;
     
     /**
-     * Book ID.
+     * Tag name.
      */
-    @Id
-    @Column(name = "UBK_IDBOOK_C", nullable = false, length = 36)
-    private String bookId;
+    @Column(name = "TAG_NAME_C", nullable = false, length = 36)
+    private String name;
     
     /**
      * User ID.
      */
-    @Id
-    @Column(name = "UBK_IDUSER_C", nullable = false, length = 36)
+    @Column(name = "TAG_IDUSER_C", nullable = false, length = 36)
     private String userId;
     
     /**
      * Creation date.
      */
-    @Column(name = "UBK_CREATEDATE_D", nullable = false)
+    @Column(name = "TAG_CREATEDATE_D", nullable = false)
     private Date createDate;
     
     /**
      * Deletion date.
      */
-    @Column(name = "UBK_DELETEDATE_D")
+    @Column(name = "TAG_DELETEDATE_D")
     private Date deleteDate;
     
     /**
-     * Read date.
+     * Tag name.
      */
-    @Column(name = "UBK_READDATE_D")
-    private Date readDate;
-    
+    @Column(name = "TAG_COLOR_C", nullable = false, length = 6)
+    private String color;
+
     /**
      * Getter of id.
-     * 
+     *
      * @return id
      */
     public String getId() {
@@ -73,7 +64,7 @@ public class UserBook implements Serializable {
 
     /**
      * Setter of id.
-     * 
+     *
      * @param id id
      */
     public void setId(String id) {
@@ -81,27 +72,9 @@ public class UserBook implements Serializable {
     }
 
     /**
-     * Getter of bookId.
-     * 
-     * @return bookId
-     */
-    public String getBookId() {
-        return bookId;
-    }
-
-    /**
-     * Setter of bookId.
-     * 
-     * @param bookId bookId
-     */
-    public void setBookId(String bookId) {
-        this.bookId = bookId;
-    }
-
-    /**
      * Getter of userId.
-     * 
-     * @return userId
+     *
+     * @return the userId
      */
     public String getUserId() {
         return userId;
@@ -109,7 +82,7 @@ public class UserBook implements Serializable {
 
     /**
      * Setter of userId.
-     * 
+     *
      * @param userId userId
      */
     public void setUserId(String userId) {
@@ -117,8 +90,26 @@ public class UserBook implements Serializable {
     }
 
     /**
+     * Getter of name.
+     *
+     * @return name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Setter of name.
+     *
+     * @param name name
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
      * Getter of createDate.
-     * 
+     *
      * @return createDate
      */
     public Date getCreateDate() {
@@ -127,16 +118,34 @@ public class UserBook implements Serializable {
 
     /**
      * Setter of createDate.
-     * 
+     *
      * @param createDate createDate
      */
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
     }
+    
+    /**
+     * Getter of color.
+     *
+     * @return the color
+     */
+    public String getColor() {
+        return color;
+    }
+
+    /**
+     * Setter of color.
+     *
+     * @param color color
+     */
+    public void setColor(String color) {
+        this.color = color;
+    }
 
     /**
      * Getter of deleteDate.
-     * 
+     *
      * @return deleteDate
      */
     public Date getDeleteDate() {
@@ -145,35 +154,18 @@ public class UserBook implements Serializable {
 
     /**
      * Setter of deleteDate.
-     * 
+     *
      * @param deleteDate deleteDate
      */
     public void setDeleteDate(Date deleteDate) {
         this.deleteDate = deleteDate;
     }
 
-    /**
-     * Getter of readDate.
-     * 
-     * @return readDate
-     */
-    public Date getReadDate() {
-        return readDate;
-    }
-
-    /**
-     * Setter of readDate.
-     * 
-     * @param readDate readDate
-     */
-    public void setReadDate(Date readDate) {
-        this.readDate = readDate;
-    }
-
     @Override
     public String toString() {
         return Objects.toStringHelper(this)
                 .add("id", id)
+                .add("name", name)
                 .toString();
     }
 }

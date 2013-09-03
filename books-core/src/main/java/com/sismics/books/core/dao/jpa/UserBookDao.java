@@ -96,7 +96,7 @@ public class UserBookDao {
         
         StringBuilder sb = new StringBuilder("select ub.UBK_ID_C c0, b.BOK_TITLE_C c1, b.BOK_SUBTITLE_C c2, b.BOK_AUTHOR_C c3, b.BOK_LANGUAGE_C c4, b.BOK_PUBLISHDATE_D c5, ub.UBK_CREATEDATE_D c6, ub.UBK_READDATE_D c7");
         sb.append(" from T_BOOK b ");
-        sb.append(" join T_USERBOOK ub on ub.UBK_IDBOOK_C = b.BOK_ID_C and ub.UBK_IDUSER_C = :userId and ub.UBK_DELETEDATE_D is null ");
+        sb.append(" join T_USER_BOOK ub on ub.UBK_IDBOOK_C = b.BOK_ID_C and ub.UBK_IDUSER_C = :userId and ub.UBK_DELETEDATE_D is null ");
         
         // Adds search criteria
         if (!Strings.isNullOrEmpty(criteria.getSearch())) {
