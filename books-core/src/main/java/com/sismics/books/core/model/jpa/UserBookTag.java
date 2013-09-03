@@ -14,8 +14,8 @@ import java.io.Serializable;
  * @author bgamard
  */
 @Entity
-@Table(name = "T_BOOK_TAG")
-public class BookTag implements Serializable {
+@Table(name = "T_USER_BOOK_TAG")
+public class UserBookTag implements Serializable {
     /**
      * Serial version UID.
      */
@@ -29,11 +29,11 @@ public class BookTag implements Serializable {
     private String id;
     
     /**
-     * Book ID.
+     * User book ID.
      */
     @Id
-    @Column(name = "BOT_IDBOOK_C", length = 36)
-    private String bookId;
+    @Column(name = "BOT_IDUSERBOOK_C", length = 36)
+    private String userBookId;
     
     /**
      * Tag ID.
@@ -61,21 +61,21 @@ public class BookTag implements Serializable {
     }
     
     /**
-     * Getter de bookId.
+     * Getter de userBookId.
      *
-     * @return the bookId
+     * @return the userBookId
      */
-    public String getBookId() {
-        return bookId;
+    public String getUserBookId() {
+        return userBookId;
     }
 
     /**
-     * Setter de bookId.
+     * Setter de userBookId.
      *
-     * @param documentId bookId
+     * @param documentId userBookId
      */
-    public void setBookId(String bookId) {
-        this.bookId = bookId;
+    public void setUserBookId(String userBookId) {
+        this.userBookId = userBookId;
     }
 
     /**
@@ -100,7 +100,7 @@ public class BookTag implements Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((bookId == null) ? 0 : bookId.hashCode());
+        result = prime * result + ((userBookId == null) ? 0 : userBookId.hashCode());
         result = prime * result + ((tagId == null) ? 0 : tagId.hashCode());
         return result;
     }
@@ -116,12 +116,12 @@ public class BookTag implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        BookTag other = (BookTag) obj;
-        if (bookId == null) {
-            if (other.bookId != null) {
+        UserBookTag other = (UserBookTag) obj;
+        if (userBookId == null) {
+            if (other.userBookId != null) {
                 return false;
             }
-        } else if (!bookId.equals(other.bookId)) {
+        } else if (!userBookId.equals(other.userBookId)) {
             return false;
         }
         if (tagId == null) {
@@ -137,7 +137,7 @@ public class BookTag implements Serializable {
     @Override
     public String toString() {
         return Objects.toStringHelper(this)
-                .add("bookId", bookId)
+                .add("userBookId", userBookId)
                 .add("tagId", tagId)
                 .toString();
     }

@@ -9,7 +9,7 @@ create memory table T_ROLE_BASE_FUNCTION ( RBF_ID_C varchar(36) not null, RBF_ID
 create cached table T_BOOK ( BOK_ID_C varchar(36) not null, BOK_TITLE_C varchar(255) not null, BOK_SUBTITLE_C varchar(255), BOK_AUTHOR_C varchar(255) not null, BOK_DESCRIPTION_C varchar(4000), BOK_ISBN10_C varchar(10), BOK_ISBN13_C varchar(13), BOK_PAGECOUNT_N integer, BOK_LANGUAGE_C varchar(2) not null, BOK_PUBLISHDATE_D datetime, primary key (BOK_ID_C) );
 create cached table T_USER_BOOK ( UBK_ID_C varchar(36) not null, UBK_IDBOOK_C varchar(36) not null, UBK_IDUSER_C varchar(36) not null, UBK_CREATEDATE_D datetime not null, UBK_DELETEDATE_D datetime, UBK_READDATE_D datetime, primary key (UBK_ID_C) );
 create cached table T_TAG ( TAG_ID_C varchar(36) not null, TAG_IDUSER_C varchar(36) not null, TAG_NAME_C varchar(36) not null, TAG_COLOR_C varchar(7) default '#3a87ad' not null, TAG_CREATEDATE_D datetime, TAG_DELETEDATE_D datetime, primary key (TAG_ID_C) );
-create cached table T_BOOK_TAG ( BOT_ID_C varchar(36) not null, BOT_IDBOOK_C varchar(36) not null, BOT_IDTAG_C varchar(36) not null, primary key (BOT_ID_C) );
+create cached table T_USER_BOOK_TAG ( BOT_ID_C varchar(36) not null, BOT_IDUSERBOOK_C varchar(36) not null, BOT_IDTAG_C varchar(36) not null, primary key (BOT_ID_C) );
 alter table T_AUTHENTICATION_TOKEN add constraint FK_AUT_IDUSER_C foreign key (AUT_IDUSER_C) references T_USER (USE_ID_C) on delete restrict on update restrict;
 alter table T_USER add constraint FK_USE_IDLOCALE_C foreign key (USE_IDLOCALE_C) references T_LOCALE (LOC_ID_C) on delete restrict on update restrict;
 alter table T_USER add constraint FK_USE_IDROLE_C foreign key (USE_IDROLE_C) references T_ROLE (ROL_ID_C) on delete restrict on update restrict;
@@ -18,7 +18,7 @@ alter table T_ROLE_BASE_FUNCTION add constraint FK_RBF_IDBASEFUNCTION_C foreign 
 alter table T_USER_BOOK add constraint FK_UBK_IDBOOK_C foreign key (UBK_IDBOOK_C) references T_BOOK (BOK_ID_C) on delete restrict on update restrict;
 alter table T_USER_BOOK add constraint FK_UBK_IDUSER_C foreign key (UBK_IDUSER_C) references T_USER (USE_ID_C) on delete restrict on update restrict;
 alter table T_TAG add constraint FK_TAG_IDUSER_C foreign key (TAG_IDUSER_C) references T_USER (USE_ID_C) on delete restrict on update restrict;
-alter table T_BOOK_TAG add constraint FK_BOT_IDBOOK_C foreign key (BOT_IDBOOK_C) references T_BOOK (BOK_ID_C) on delete restrict on update restrict;
+alter table T_BOOK_TAG add constraint FK_BOT_IDUSERBOOK_C foreign key (BOT_IDUSERBOOK_C) references T_USER_BOOK (UBK_ID_C) on delete restrict on update restrict;
 alter table T_BOOK_TAG add constraint FK_BOT_IDTAG_C foreign key (DOT_IDTAG_C) references T_TAG (TAG_ID_C) on delete restrict on update restrict;
 insert into T_CONFIG(CFG_ID_C, CFG_VALUE_C) values('DB_VERSION', '0');
 insert into T_CONFIG(CFG_ID_C, CFG_VALUE_C) values('LUCENE_DIRECTORY_STORAGE', 'FILE');
