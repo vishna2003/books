@@ -32,6 +32,15 @@ var App = angular.module('books',
       }
     }
   })
+  .state('bookview', {
+    url: '/book/:id',
+    views: {
+      'page': {
+        templateUrl: 'partial/book.view.html',
+        controller: 'BookView'
+      }
+    }
+  })
   .state('bookadd', {
     url: '/book/add/:isbn',
     views: {

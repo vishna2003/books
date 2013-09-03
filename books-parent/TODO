@@ -1,6 +1,6 @@
-- Book add (client)
-- Book list (client)
 - Tags (client)
-- Goodreads import (client)
-- Fallback to OpenLibrary, Amazon API
-- Share book lists
+- Fallback to OpenLibrary, Amazon API and throttle (server)
+- Share book lists (client/server)
+- No books placeholder (client)
+- Infinite scrolling on books list (client)
+- Loading spinner (client)

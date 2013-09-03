@@ -23,4 +23,9 @@ App.controller('Navigation', function($scope, $http, $state, $rootScope, User) {
   $scope.isLoading = function() {
     return $http.pendingRequests.length > 0;
   };
+
+  // Collapse the menu on state change
+  $scope.$on('$stateChangeStart', function() {
+    $scope.collapsed = true;
+  });
 });

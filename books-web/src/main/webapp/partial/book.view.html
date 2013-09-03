@@ -1,0 +1,21 @@
+<div class="row" ng-if="book">
+  <div class="col-md-12">
+    <h2>{{ book.title }} {{ book.subtitle }} <small>{{ book.author }}</small></h2>
+    <p class="pull-left">
+      <img ng-src="api/book/{{ book.id }}/cover" class="img-thumbnail" />
+    </p>
+    <p class="clearfix">{{ book.description }}</p>
+    <dl class="dl-horizontal">
+      <dt>ISBN 10</dt>
+      <dd>{{ book.isbn10 }}</dd>
+      <dt>ISBN 13</dt>
+      <dd>{{ book.isbn13 }}</dd>
+      <dt>Publication date</dt>
+      <dd>{{ book.publish_date | date: 'yyyy' }}</dd>
+      <dt>Number of pages</dt>
+      <dd>{{ book.page_count }}</dd>
+      <dt>Language</dt>
+      <dd><img ng-src="img/flags/{{ book.language }}.png" /></dd>
+    </dl>
+  </div>
+</div>

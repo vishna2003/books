@@ -142,6 +142,7 @@ public class BookResource extends BaseResource {
         
         // Return book data
         JSONObject book = new JSONObject();
+        book.put("id", userBook.getId());
         book.put("title", bookDb.getTitle());
         book.put("subtitle", bookDb.getSubtitle());
         book.put("author", bookDb.getAuthor());
@@ -151,6 +152,10 @@ public class BookResource extends BaseResource {
         book.put("isbn13", bookDb.getIsbn13());
         book.put("language", bookDb.getLanguage());
         book.put("publish_date", bookDb.getPublishDate().getTime());
+        book.put("create_date", userBook.getCreateDate().getTime());
+        if (userBook.getReadDate() != null) {
+            book.put("read_date", userBook.getReadDate().getTime());
+        }
         
         // Add tags
         TagDao tagDao = new TagDao();
@@ -187,14 +192,14 @@ public class BookResource extends BaseResource {
         // Get the cover image
         File file = Paths.get(DirectoryUtil.getBookDirectory().getPath(), userBook.getBookId()).toFile();
         InputStream inputStream = null;
-        if (file.exists()) {
-            try {
+        try {
+            if (file.exists()) {
                 inputStream = new FileInputStream(file);
-            } catch (FileNotFoundException e) {
-                throw new ServerException("FileNotFound", "Cover file not found", e);
+            } else {
+                inputStream = new FileInputStream(new File(getClass().getResource("/dummy.png").getFile()));
             }
-        } else {
-            // TODO Return a dummy image
+        } catch (FileNotFoundException e) {
+            throw new ServerException("FileNotFound", "Cover file not found", e);
         }
 
         return Response.ok(inputStream)

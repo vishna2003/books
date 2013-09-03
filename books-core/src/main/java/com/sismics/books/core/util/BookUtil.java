@@ -32,7 +32,8 @@ public class BookUtil {
     /**
      * Google Books API Search URL.
      */
-    public static final String GOOGLE_BOOKS_SEARCH_FORMAT = "https://www.googleapis.com/books/v1/volumes?q=isbn:%s";
+    // TODO Parametrize API key (T_CONFIG table and AppResource to modify it, warning if no key at all)
+    public static final String GOOGLE_BOOKS_SEARCH_FORMAT = "https://www.googleapis.com/books/v1/volumes?q=isbn:%s&key=AIzaSyC8CXDtLo-3ErzRF5rXTcAnLbtGjKLgUEE";
     
     /**
      * Parser for multiple date formats;
@@ -61,6 +62,7 @@ public class BookUtil {
         URL url = new URL(String.format(Locale.ENGLISH, GOOGLE_BOOKS_SEARCH_FORMAT, isbn));
         URLConnection connection = url.openConnection();
         connection.setRequestProperty("Accept-Charset", "utf-8");
+        connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.62 Safari/537.36");
         connection.setConnectTimeout(10000);
         connection.setReadTimeout(10000);
         InputStream inputStream = connection.getInputStream();
@@ -98,6 +100,8 @@ public class BookUtil {
         book.setPageCount(volumeInfo.has("pageCount") ? volumeInfo.get("pageCount").getLongValue() : null);
         book.setPublishDate(formatter.parseDateTime(volumeInfo.get("publishedDate").getTextValue()).toDate());
         
+        Thread.sleep(100); // TODO Throttle API calls with a service
+        
         // Download the thumbnail
         JsonNode imageLinks = volumeInfo.get("imageLinks");
         if (imageLinks != null && imageLinks.has("thumbnail")) {
@@ -109,6 +113,8 @@ public class BookUtil {
             InputStream imageInputStream = imageConnection.getInputStream();
             Path imagePath = Paths.get(DirectoryUtil.getBookDirectory().getPath(), book.getId());
             Files.copy(imageInputStream, imagePath, StandardCopyOption.REPLACE_EXISTING);
+            
+            Thread.sleep(100); // TODO Throttle API calls with a service
         }
         
         return book;

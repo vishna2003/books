@@ -29,8 +29,10 @@
     <script src="app/controller/Main.js" type="text/javascript"></script>
     <script src="app/controller/Book.js" type="text/javascript"></script>
     <script src="app/controller/BookAdd.js" type="text/javascript"></script>
+    <script src="app/controller/BookView.js" type="text/javascript"></script>
     <script src="app/controller/Login.js" type="text/javascript"></script>
     <script src="app/controller/Navigation.js" type="text/javascript"></script>
+    <script src="app/directive/File.js" type="text/javascript"></script>
     <script src="app/service/User.js" type="text/javascript"></script>
   </head>
   <body>
@@ -40,10 +42,17 @@
           <img src="img/loader.gif" />
         </div>
 
+        <button ng-init="collapsed = true" type="button" class="navbar-toggle" ng-click="collapsed = !collapsed">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+
         <a class="navbar-brand" href="#">Sismics Books</a>
       </div>
 
-      <div class="collapse navbar-collapse">
+      <div class="navbar-collapse" ng-class="{ in: !collapsed, collapse: collapsed }">
         <ul class="nav navbar-nav" ng-show="!userInfo.anonymous">
           <li ng-class="{active: $uiRoute}" ui-route="/book"><a href="#/book"><span class="glyphicon glyphicon-book"></span> Books</a></li>
           <li ng-class="{active: $uiRoute}" ui-route="/book/add.*"><a href="#/book/add/"><span class="glyphicon glyphicon-plus"></span> Add a book</a></li>

@@ -12,7 +12,7 @@
         <div class="form-group">
           <label class="sr-only" for="inputSearch">Search</label>
           <div class="col-md-12">
-            <input tyle="text" class="form-control" id="inputSearch" placeholder="Search" />
+            <input tyle="text" class="form-control" ng-model="search" id="inputSearch" placeholder="Search" />
           </div>
         </div>
       </form>
@@ -21,75 +21,19 @@
 
   <div class="col-md-12">
     <div class="row book-list">
-      <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2 book">
-        <a href="#" class="thumbnail">
-          <img ng-src="http://bks2.books.google.fr/books?id=4uG5GwAACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api" />
+
+      <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2 book" ng-repeat="book in books">
+        <a href="#/book/{{ book.id }}" class="thumbnail">
+          <div class="image">
+            <img ng-src="api/book/{{ book.id }}/cover" title="{{ book.title }}" />
+          </div>
           <div class="caption">
-            <p class="text-primary text-center">Le père de nos pères</p>
-            <p class="text-muted text-center">Bernard Werber</p>
+            <p class="text-primary text-center">{{ book.title }}</p>
+            <p class="text-muted text-center">{{ book.author }}</p>
           </div>
         </a>
       </div>
 
-      <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2 book">
-        <a href="#" class="thumbnail">
-          <img ng-src="http://bks2.books.google.fr/books?id=4uG5GwAACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api" />
-          <div class="caption">
-            <p class="text-primary text-center">Le père de nos pères</p>
-            <p class="text-muted text-center">Bernard Werber</p>
-          </div>
-        </a>
-      </div>
-
-      <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2 book">
-        <a href="#" class="thumbnail">
-          <img ng-src="http://bks2.books.google.fr/books?id=4uG5GwAACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api" />
-          <div class="caption">
-            <p class="text-primary text-center">Le père de nos pères</p>
-            <p class="text-muted text-center">Bernard Werber</p>
-          </div>
-        </a>
-      </div>
-
-      <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2 book">
-        <a href="#" class="thumbnail">
-          <img ng-src="http://bks2.books.google.fr/books?id=4uG5GwAACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api" />
-          <div class="caption">
-            <p class="text-primary text-center">Le père de nos pères</p>
-            <p class="text-muted text-center">Bernard Werber</p>
-          </div>
-        </a>
-      </div>
-
-      <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2 book">
-        <a href="#" class="thumbnail">
-          <img ng-src="http://bks2.books.google.fr/books?id=4uG5GwAACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api" />
-          <div class="caption">
-            <p class="text-primary text-center">Le père de nos pères</p>
-            <p class="text-muted text-center">Bernard Werber</p>
-          </div>
-        </a>
-      </div>
-
-      <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2 book">
-        <a href="#" class="thumbnail">
-          <img ng-src="http://bks2.books.google.fr/books?id=4uG5GwAACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api" />
-          <div class="caption">
-            <p class="text-primary text-center">Le père de nos pères</p>
-            <p class="text-muted text-center">Bernard Werber</p>
-          </div>
-        </a>
-      </div>
-
-      <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2 book">
-        <a href="#" class="thumbnail">
-          <img ng-src="http://bks2.books.google.fr/books?id=4uG5GwAACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api" />
-          <div class="caption">
-            <p class="text-primary text-center">Le père de nos pères</p>
-            <p class="text-muted text-center">Bernard Werber</p>
-          </div>
-        </a>
-      </div>
     </div>
   </div>
 </div>

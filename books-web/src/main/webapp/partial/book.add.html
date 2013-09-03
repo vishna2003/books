@@ -27,8 +27,25 @@
           <form role="form">
             <div class="form-group">
               <label for="inputIsbn">ISBN (10 or 13 numbers)</label>
-              <input type="text" class="form-control" id="inputIsbn" placeholder="ISBN" />
+              <input type="text" class="form-control" id="inputIsbn" ng-model="isbn" placeholder="ISBN" />
             </div>
+            <button type="submit" class="btn btn-primary" ng-click="addBook()">Add</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title"><span class="glyphicon glyphicon-import"></span> Import from Goodreads</h3>
+        </div>
+        <div class="panel-body">
+          <p>From your <a href="https://www.goodreads.com/review/import" target="_blank">Goodreads import/export interface</a>, select "export to a csv file" on the right.</p>
+          <form role="form">
+            <div class="form-group">
+              <label for="inputIsbn">CSV file from Goodreads</label>
+              <file class="form-control" id="inputImportFile" ng-model="importFile" />
+            </div>
+            <button type="submit" class="btn btn-primary" ng-click="importBooks()">Import</button>
           </form>
         </div>
       </div>
