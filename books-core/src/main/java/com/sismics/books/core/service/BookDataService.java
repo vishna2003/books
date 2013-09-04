@@ -32,6 +32,7 @@ import com.sismics.books.core.constant.ConfigType;
 import com.sismics.books.core.model.jpa.Book;
 import com.sismics.books.core.util.ConfigUtil;
 import com.sismics.books.core.util.DirectoryUtil;
+import com.sismics.books.core.util.TransactionUtil;
 
 /**
  * Service to fetch book informations. 
@@ -84,7 +85,8 @@ public class BookDataService extends AbstractIdleService {
         DateTimeParser[] parsers = { 
                 DateTimeFormat.forPattern("yyyy").getParser(),
                 DateTimeFormat.forPattern("yyyy-MM").getParser(),
-                DateTimeFormat.forPattern("yyyy-MM-dd").getParser() };
+                DateTimeFormat.forPattern("yyyy-MM-dd").getParser(),
+                DateTimeFormat.forPattern("MMM d, yyyy").getParser()};
         formatter = new DateTimeFormatterBuilder().append( null, parsers ).toFormatter();
     }
     
@@ -101,7 +103,12 @@ public class BookDataService extends AbstractIdleService {
      * Initialize service configuration.
      */
     public void initConfig() {
-        apiKeyGoogle = ConfigUtil.getConfigStringValue(ConfigType.API_KEY_GOOGLE);
+        TransactionUtil.handle(new Runnable() {
+            @Override
+            public void run() {
+                apiKeyGoogle = ConfigUtil.getConfigStringValue(ConfigType.API_KEY_GOOGLE);
+            }
+        });
     }
 
     /**
@@ -125,7 +132,7 @@ public class BookDataService extends AbstractIdleService {
                     try {
                         return searchBookWithOpenLibrary(isbn);
                     } catch (Exception e0) {
-                        log.warn("Book not found with Open Library: " + isbn + " with error: " + e.getMessage());
+                        log.warn("Book not found with Open Library: " + isbn + " with error: " + e0.getMessage());
                         log.warn("Book not found with any API: " + isbn);
                         throw e0;
                     }
@@ -212,49 +219,54 @@ public class BookDataService extends AbstractIdleService {
      */
     private Book searchBookWithOpenLibrary(String isbn) throws Exception {
         openLibraryRateLimiter.acquire();
-        throw new Exception("Not implemented"); // TODO Implement Open Library API
-//        URL url = new URL(String.format(Locale.ENGLISH, OPEN_LIBRARY_FORMAT, isbn));
-//        URLConnection connection = url.openConnection();
-//        connection.setRequestProperty("Accept-Charset", "utf-8");
-//        connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.62 Safari/537.36");
-//        connection.setConnectTimeout(10000);
-//        connection.setReadTimeout(10000);
-//        InputStream inputStream = connection.getInputStream();
-//        ObjectMapper mapper = new ObjectMapper();
-//        JsonNode rootNode = mapper.readValue(inputStream, JsonNode.class);
-//        ArrayNode items = (ArrayNode) rootNode.get("items");
-//        if (rootNode.get("totalItems").getIntValue() <= 0) {
-//            throw new Exception("No book found for ISBN: " + isbn);
+        
+        URL url = new URL(String.format(Locale.ENGLISH, OPEN_LIBRARY_FORMAT, isbn));
+        URLConnection connection = url.openConnection();
+        connection.setRequestProperty("Accept-Charset", "utf-8");
+        connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.62 Safari/537.36");
+        connection.setConnectTimeout(10000);
+        connection.setReadTimeout(10000);
+        InputStream inputStream = connection.getInputStream();
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode rootNode = mapper.readValue(inputStream, JsonNode.class);
+        if (rootNode instanceof ArrayNode) {
+            throw new Exception("No book found for ISBN: " + isbn);
+        }
+        
+        JsonNode bookNode = rootNode.get("records").getElements().next();
+        JsonNode details = bookNode.get("details").get("details");
+        
+        // Build the book
+        Book book = new Book();
+        book.setId(UUID.randomUUID().toString());
+        book.setTitle(details.get("title").getTextValue());
+        book.setSubtitle(details.has("subtitle") ? details.get("subtitle").getTextValue() : null);
+        book.setAuthor(details.has("authors") && details.get("authors").size() > 0 ? details.get("authors").get(0).get("name").getTextValue() : null);
+        book.setDescription(details.has("first_sentence") ? details.get("first_sentence").get("value").getTextValue() : null);
+        book.setIsbn10(details.has("isbn_10") && details.get("isbn_10").size() > 0 ? details.get("isbn_10").get(0).getTextValue() : null);
+        book.setIsbn13(details.has("isbn_13") && details.get("isbn_13").size() > 0 ? details.get("isbn_13").get(0).getTextValue() : null);
+//        TODO Convert to 2-char iso code if (details.has("languages") && details.get("languages").size() > 0) {
+//        See https://github.com/TakahikoKawasaki/nv-i18n
+//            String language = details.get("languages").get(0).get("key").getTextValue();
+//            Locale locale = new Locale(language.split("/")[2]);
+//            book.setLanguage(locale.getLanguage());
 //        }
-//        JsonNode item = items.get(0);
-//        JsonNode volumeInfo = item.get("volumeInfo");
-//        
-//        // Build the book
-//        Book book = new Book();
-//        book.setId(UUID.randomUUID().toString());
-//        book.setTitle(volumeInfo.get("title").getTextValue());
-//        book.setSubtitle(volumeInfo.has("subtitle") ? volumeInfo.get("subtitle").getTextValue() : null);
-//        book.setAuthor(authors.get(0).getTextValue());
-//        book.setDescription(volumeInfo.has("description") ? volumeInfo.get("description").getTextValue() : null);
-//        book.setIsbn10(industryIdentifier.get("identifier").getTextValue());
-//        book.setIsbn13(industryIdentifier.get("identifier").getTextValue());
-//        book.setLanguage(volumeInfo.get("language").getTextValue());
-//        book.setPageCount(volumeInfo.has("pageCount") ? volumeInfo.get("pageCount").getLongValue() : null);
-//        book.setPublishDate(formatter.parseDateTime(volumeInfo.get("publishedDate").getTextValue()).toDate());
-//        
-//        // Download the thumbnail
-//        if () {
-//            String imageUrl = null;
-//            URLConnection imageConnection = new URL(imageUrl).openConnection();
-//            imageConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.62 Safari/537.36");
-//            imageConnection.setConnectTimeout(10000);
-//            imageConnection.setReadTimeout(10000);
-//            InputStream imageInputStream = imageConnection.getInputStream();
-//            Path imagePath = Paths.get(DirectoryUtil.getBookDirectory().getPath(), book.getId());
-//            Files.copy(imageInputStream, imagePath, StandardCopyOption.REPLACE_EXISTING);
-//        }
-//        
-//        return book;
+        book.setPageCount(details.has("number_of_pages") ? details.get("number_of_pages").getLongValue() : null);
+        book.setPublishDate(details.has("publish_date") ? formatter.parseDateTime(details.get("publish_date").getTextValue()).toDate() : null);
+        
+        // Download the thumbnail
+        if (details.has("covers") && details.get("covers").size() > 0) {
+            String imageUrl = "http://covers.openlibrary.org/b/id/" + details.get("covers").get(0).getLongValue() + "-M.jpg";
+            URLConnection imageConnection = new URL(imageUrl).openConnection();
+            imageConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.62 Safari/537.36");
+            imageConnection.setConnectTimeout(10000);
+            imageConnection.setReadTimeout(10000);
+            InputStream imageInputStream = imageConnection.getInputStream();
+            Path imagePath = Paths.get(DirectoryUtil.getBookDirectory().getPath(), book.getId());
+            Files.copy(imageInputStream, imagePath, StandardCopyOption.REPLACE_EXISTING);
+        }
+        
+        return book;
     }
     
     @Override
