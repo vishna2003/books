@@ -69,7 +69,7 @@ public class Book {
     /**
      * Language (ISO 639-1).
      */
-    @Column(name = "BOK_LANGUAGE_C", nullable = false, length = 2)
+    @Column(name = "BOK_LANGUAGE_C", length = 2)
     private String language;
     
     /**

@@ -82,6 +82,11 @@
       <artifactId>opencsv</artifactId>
     </dependency>
     
+    <dependency>
+      <groupId>com.neovisionaries</groupId>
+      <artifactId>nv-i18n</artifactId>
+    </dependency>
+    
     <!-- Test dependencies -->
     <dependency>
       <groupId>junit</groupId>

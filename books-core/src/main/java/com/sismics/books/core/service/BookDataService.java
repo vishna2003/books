@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.util.concurrent.AbstractIdleService;
 import com.google.common.util.concurrent.RateLimiter;
+import com.neovisionaries.i18n.LanguageCode;
 import com.sismics.books.core.constant.ConfigType;
 import com.sismics.books.core.model.jpa.Book;
 import com.sismics.books.core.util.ConfigUtil;
@@ -133,7 +134,7 @@ public class BookDataService extends AbstractIdleService {
                         return searchBookWithOpenLibrary(isbn);
                     } catch (Exception e0) {
                         log.warn("Book not found with Open Library: " + isbn + " with error: " + e0.getMessage());
-                        log.warn("Book not found with any API: " + isbn);
+                        log.error("Book not found with any API: " + isbn);
                         throw e0;
                     }
                 }
@@ -245,12 +246,11 @@ public class BookDataService extends AbstractIdleService {
         book.setDescription(details.has("first_sentence") ? details.get("first_sentence").get("value").getTextValue() : null);
         book.setIsbn10(details.has("isbn_10") && details.get("isbn_10").size() > 0 ? details.get("isbn_10").get(0).getTextValue() : null);
         book.setIsbn13(details.has("isbn_13") && details.get("isbn_13").size() > 0 ? details.get("isbn_13").get(0).getTextValue() : null);
-//        TODO Convert to 2-char iso code if (details.has("languages") && details.get("languages").size() > 0) {
-//        See https://github.com/TakahikoKawasaki/nv-i18n
-//            String language = details.get("languages").get(0).get("key").getTextValue();
-//            Locale locale = new Locale(language.split("/")[2]);
-//            book.setLanguage(locale.getLanguage());
-//        }
+        if (details.has("languages") && details.get("languages").size() > 0) {
+            String language = details.get("languages").get(0).get("key").getTextValue();
+            LanguageCode languageCode = LanguageCode.getByCode(language.split("/")[2]);
+            book.setLanguage(languageCode.name());
+        }
         book.setPageCount(details.has("number_of_pages") ? details.get("number_of_pages").getLongValue() : null);
         book.setPublishDate(details.has("publish_date") ? formatter.parseDateTime(details.get("publish_date").getTextValue()).toDate() : null);
         

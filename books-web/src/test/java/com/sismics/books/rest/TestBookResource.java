@@ -140,6 +140,7 @@ public class TestBookResource extends BaseJerseyTest {
         bookResource = resource().path("/book/list");
         bookResource.addFilter(new CookieAuthenticationFilter(book1Token));
         getParams = new MultivaluedMapImpl();
+        getParams.add("tag", "Tag3");
         getParams.add("search", "vision");
         response = bookResource.queryParams(getParams).get(ClientResponse.class);
         json = response.getEntity(JSONObject.class);

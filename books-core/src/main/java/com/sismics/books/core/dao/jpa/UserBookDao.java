@@ -122,6 +122,15 @@ public class UserBookDao {
             criteriaList.add(" (b.BOK_TITLE_C like :search or b.BOK_SUBTITLE_C like :search or b.BOK_AUTHOR_C like :search) ");
             parameterMap.put("search", "%" + criteria.getSearch() + "%");
         }
+        if (criteria.getTagIdList() != null && !criteria.getTagIdList().isEmpty()) {
+            int index = 0;
+            for (String tagId : criteria.getTagIdList()) {
+                sb.append(" left join T_USER_BOOK_TAG ubk" + index + " on ubk" + index + ".BOT_IDUSERBOOK_C = ub.UBK_ID_C and ubk" + index + ".BOT_IDTAG_C = :tagId" + index + " ");
+                criteriaList.add("ubk" + index + ".BOT_ID_C is not null");
+                parameterMap.put("tagId" + index, tagId);
+                index++;
+            }
+        }
         parameterMap.put("userId", criteria.getUserId());
         
         if (!criteriaList.isEmpty()) {

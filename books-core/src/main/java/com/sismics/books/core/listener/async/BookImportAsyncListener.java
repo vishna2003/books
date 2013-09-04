@@ -5,6 +5,8 @@ import java.io.FileReader;
 import java.text.MessageFormat;
 import java.util.Date;
 
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,8 +58,9 @@ public class BookImportAsyncListener {
                     log.error("Unable to read CSV file", e);
                 }
                 
-                // Headers:
-                // Book Id,Title,Author,Author l-f,Additional Authors,ISBN,ISBN13,My Rating,Average Rating,Publisher,Binding,Number of Pages,Year Published,Original Publication Year,Date Read,Date Added,Bookshelves,Bookshelves with positions,Exclusive Shelf,My Review,Spoiler,Private Notes,Read Count,Recommended For,Recommended By,Owned Copies,Original Purchase Date,Original Purchase Location,Condition,Condition Description,BCID
+                // Goodreads date format
+                DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy/MM/dd");
+                
                 String [] line;
                 try {
                     while ((line = reader.readNext()) != null) {
@@ -67,7 +70,7 @@ public class BookImportAsyncListener {
                         }
                         
                         // Retrieve ISBN number
-                        String isbn = Strings.isNullOrEmpty(line[5]) ? line[6] : line[5];
+                        String isbn = Strings.isNullOrEmpty(line[6]) ? line[5] : line[6];
                         if (Strings.isNullOrEmpty(isbn)) {
                             log.warn("No ISBN number for Goodreads book ID: " + line[0]);
                             continue;
@@ -94,11 +97,17 @@ public class BookImportAsyncListener {
                             userBook.setUserId(bookImportedEvent.getUser().getId());
                             userBook.setBookId(book.getId());
                             userBook.setCreateDate(new Date());
+                            if (!Strings.isNullOrEmpty(line[14])) {
+                                userBook.setReadDate(formatter.parseDateTime(line[14]).toDate());
+                            }
+                            if (!Strings.isNullOrEmpty(line[15])) {
+                                userBook.setCreateDate(formatter.parseDateTime(line[15]).toDate());
+                            }
                             userBookDao.create(userBook);
                             
-                            // TODO Import read date and creation date
                             // TODO Import bookshelves in tags (and create them if necessary)
                         }
+                        TransactionUtil.commit();
                     }
                 } catch (Exception e) {
                     log.error("Error parsing CSV line", e);

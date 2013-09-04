@@ -3,15 +3,18 @@
 /**
  * Book controller.
  */
-App.controller('Book', function($scope, $timeout, Restangular) {
+App.controller('Book', function($scope, $timeout, Restangular, $stateParams) {
   /**
-   * Books list sort status.
+   * View scope variables.
    */
   $scope.sortColumn = 3;
   $scope.asc = true;
   $scope.offset = 0;
   $scope.limit = 20;
   $scope.search = '';
+  $scope.loading = false;
+  $scope.books = [];
+  $scope.total = -1;
 
   // A timeout promise is used to slow down search requests to the server
   // We keep track of it for cancellation purpose
@@ -22,28 +25,44 @@ App.controller('Book', function($scope, $timeout, Restangular) {
    */
   $scope.loadBooks = function() {
     $scope.offset = 0;
+    $scope.total = -1;
+    $scope.books = [];
     $scope.pageBooks();
   };
 
   /**
    * Load books.
    */
-  $scope.pageBooks = function() {
+  $scope.pageBooks = function(next) {
+    console.log($scope.total == $scope.books.length);
+    if ($scope.loading || $scope.total == $scope.books.length) {
+      // Avoid spamming the server
+      return;
+    }
+
+    if (next) {
+      $scope.offset += $scope.limit;
+    }
+
+    $scope.loading = true;
     Restangular.one('book').getList('list', {
       offset: $scope.offset,
       limit: $scope.limit,
       sort_column: $scope.sortColumn,
       asc: $scope.asc,
-      search: $scope.search
+      search: $scope.search,
+      tag: $stateParams.tag
     }).then(function(data) {
-          $scope.books = data.books;
+          $scope.books = $scope.books.concat(data.books);
+          $scope.total = data.total;
+          $scope.loading = false;
         });
   };
 
   /**
    * Watch for search scope change.
    */
-  $scope.$watch('search', function(prev, next) {
+  $scope.$watch('search', function() {
     if (timeoutPromise) {
       // Cancel previous timeout
       $timeout.cancel(timeoutPromise);
@@ -54,4 +73,9 @@ App.controller('Book', function($scope, $timeout, Restangular) {
       $scope.loadBooks();
     }, 200);
   }, true);
+
+  // Load tags
+  Restangular.one('tag/list').get().then(function(data) {
+    $scope.tags = data.tags;
+  });
 });

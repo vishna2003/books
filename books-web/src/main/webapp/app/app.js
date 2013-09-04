@@ -5,7 +5,8 @@
  */
 var App = angular.module('books',
     // Dependencies
-    ['ui.state', 'ui.route', 'restangular', 'ngSanitize', 'ngMobile']
+    ['ui.state', 'ui.route', 'restangular', 'ngSanitize',
+      'ngMobile', 'colorpicker.module', 'ui.keypress', 'ui.validate',]
   )
 
 /**
@@ -24,7 +25,7 @@ var App = angular.module('books',
     }
   })
   .state('book', {
-    url: '/book',
+    url: '/book/:tag',
     views: {
       'page': {
         templateUrl: 'partial/book.html',
@@ -33,7 +34,7 @@ var App = angular.module('books',
     }
   })
   .state('bookview', {
-    url: '/book/:id',
+    url: '/book/view/:id',
     views: {
       'page': {
         templateUrl: 'partial/book.view.html',
@@ -58,7 +59,89 @@ var App = angular.module('books',
         controller: 'Login'
       }
     }
-  });
+  })
+  .state('tag', {
+    url: '/tag',
+    views: {
+      'page': {
+        templateUrl: 'partial/tag.html',
+        controller: 'Tag'
+      }
+    }
+  })
+  .state('settings', {
+    url: '/settings',
+    abstract: true,
+    views: {
+      'page': {
+        templateUrl: 'partial/settings.html',
+        controller: 'Settings'
+      }
+    }
+  })
+    .state('settings.default', {
+      url: '',
+      views: {
+        'settings': {
+          templateUrl: 'partial/settings.default.html',
+          controller: 'SettingsDefault'
+        }
+      }
+    })
+    .state('settings.account', {
+      url: '/account',
+      views: {
+        'settings': {
+          templateUrl: 'partial/settings.account.html',
+          controller: 'SettingsAccount'
+        }
+      }
+    })
+    .state('settings.session', {
+      url: '/session',
+      views: {
+        'settings': {
+          templateUrl: 'partial/settings.session.html',
+          controller: 'SettingsSession'
+        }
+      }
+    })
+    .state('settings.log', {
+      url: '/log',
+      views: {
+        'settings': {
+          templateUrl: 'partial/settings.log.html',
+          controller: 'SettingsLog'
+        }
+      }
+    })
+    .state('settings.user', {
+      url: '/user',
+      views: {
+        'settings': {
+          templateUrl: 'partial/settings.user.html',
+          controller: 'SettingsUser'
+        }
+      }
+    })
+      .state('settings.user.edit', {
+        url: '/edit/:username',
+        views: {
+          'user': {
+            templateUrl: 'partial/settings.user.edit.html',
+            controller: 'SettingsUserEdit'
+          }
+        }
+      })
+      .state('settings.user.add', {
+        url: '/add',
+        views: {
+          'user': {
+            templateUrl: 'partial/settings.user.edit.html',
+            controller: 'SettingsUserEdit'
+          }
+        }
+      });
   
   // Configuring Restangular
   RestangularProvider.setBaseUrl('api');

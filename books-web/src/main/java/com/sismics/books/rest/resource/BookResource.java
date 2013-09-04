@@ -30,6 +30,8 @@ import org.apache.commons.io.IOUtils;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import com.sismics.books.core.dao.jpa.BookDao;
 import com.sismics.books.core.dao.jpa.TagDao;
 import com.sismics.books.core.dao.jpa.UserBookDao;
@@ -223,11 +225,11 @@ public class BookResource extends BaseResource {
             @QueryParam("offset") Integer offset,
             @QueryParam("sort_column") Integer sortColumn,
             @QueryParam("asc") Boolean asc,
-            @QueryParam("search") String search) throws JSONException {
+            @QueryParam("search") String search,
+            @QueryParam("tag") String tagName) throws JSONException {
         if (!authenticate()) {
             throw new ForbiddenClientException();
         }
-        
         JSONObject response = new JSONObject();
         List<JSONObject> books = new ArrayList<>();
         
@@ -238,6 +240,12 @@ public class BookResource extends BaseResource {
         UserBookCriteria criteria = new UserBookCriteria();
         criteria.setSearch(search);
         criteria.setUserId(principal.getId());
+        if (!Strings.isNullOrEmpty(tagName)) {
+            List<Tag> tagList = tagDao.findByName(principal.getId(), tagName);
+            if (tagList.size() > 0) {
+                criteria.setTagIdList(Lists.newArrayList(tagList.get(0).getId()));
+            }
+        }
         try {
             userBookDao.findByCriteria(paginatedList, criteria, sortCriteria);
         } catch (Exception e) {
