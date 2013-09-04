@@ -76,6 +76,14 @@ public class TestBookResource extends BaseJerseyTest {
         response = bookResource.post(ClientResponse.class, postParams);
         Assert.assertEquals(Status.OK, Status.fromStatusCode(response.getStatus()));
         
+        // Set a book as read
+        bookResource = resource().path("/book/" + book1Id + "/read");
+        bookResource.addFilter(new CookieAuthenticationFilter(book1Token));
+        postParams = new MultivaluedMapImpl();
+        postParams.add("read", true);
+        response = bookResource.post(ClientResponse.class, postParams);
+        Assert.assertEquals(Status.OK, Status.fromStatusCode(response.getStatus()));
+        
         // Get the book
         bookResource = resource().path("/book/" + book1Id);
         bookResource.addFilter(new CookieAuthenticationFilter(book1Token));
@@ -92,7 +100,24 @@ public class TestBookResource extends BaseJerseyTest {
         Assert.assertEquals("0345376595", json.getString("isbn10"));
         Assert.assertEquals("9780345376596", json.getString("isbn13"));
         Assert.assertEquals("Tag3", json.getJSONArray("tags").getJSONObject(0).getString("name"));
+        Assert.assertNotNull(json.getLong("read_date"));
 
+        // Set a book as unread
+        bookResource = resource().path("/book/" + book1Id + "/read");
+        bookResource.addFilter(new CookieAuthenticationFilter(book1Token));
+        postParams = new MultivaluedMapImpl();
+        postParams.add("read", false);
+        response = bookResource.post(ClientResponse.class, postParams);
+        Assert.assertEquals(Status.OK, Status.fromStatusCode(response.getStatus()));
+        
+        // Get the book
+        bookResource = resource().path("/book/" + book1Id);
+        bookResource.addFilter(new CookieAuthenticationFilter(book1Token));
+        response = bookResource.get(ClientResponse.class);
+        Assert.assertEquals(Status.OK, Status.fromStatusCode(response.getStatus()));
+        json = response.getEntity(JSONObject.class);
+        Assert.assertFalse(json.has("read_date"));
+        
         // Get the book cover
         bookResource = resource().path("/book/" + book1Id + "/cover");
         response = bookResource.get(ClientResponse.class);

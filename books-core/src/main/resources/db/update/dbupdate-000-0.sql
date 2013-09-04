@@ -18,10 +18,10 @@ alter table T_ROLE_BASE_FUNCTION add constraint FK_RBF_IDBASEFUNCTION_C foreign 
 alter table T_USER_BOOK add constraint FK_UBK_IDBOOK_C foreign key (UBK_IDBOOK_C) references T_BOOK (BOK_ID_C) on delete restrict on update restrict;
 alter table T_USER_BOOK add constraint FK_UBK_IDUSER_C foreign key (UBK_IDUSER_C) references T_USER (USE_ID_C) on delete restrict on update restrict;
 alter table T_TAG add constraint FK_TAG_IDUSER_C foreign key (TAG_IDUSER_C) references T_USER (USE_ID_C) on delete restrict on update restrict;
-alter table T_BOOK_TAG add constraint FK_BOT_IDUSERBOOK_C foreign key (BOT_IDUSERBOOK_C) references T_USER_BOOK (UBK_ID_C) on delete restrict on update restrict;
-alter table T_BOOK_TAG add constraint FK_BOT_IDTAG_C foreign key (DOT_IDTAG_C) references T_TAG (TAG_ID_C) on delete restrict on update restrict;
+alter table T_USER_BOOK_TAG add constraint FK_BOT_IDUSERBOOK_C foreign key (BOT_IDUSERBOOK_C) references T_USER_BOOK (UBK_ID_C) on delete restrict on update restrict;
+alter table T_USER_BOOK_TAG add constraint FK_BOT_IDTAG_C foreign key (BOT_IDTAG_C) references T_TAG (TAG_ID_C) on delete restrict on update restrict;
 insert into T_CONFIG(CFG_ID_C, CFG_VALUE_C) values('DB_VERSION', '0');
-insert into T_CONFIG(CFG_ID_C, CFG_VALUE_C) values('LUCENE_DIRECTORY_STORAGE', 'FILE');
+insert into T_CONFIG(CFG_ID_C, CFG_VALUE_C) values('API_KEY_GOOGLE', '');
 insert into T_BASE_FUNCTION(BAF_ID_C) values('ADMIN');
 insert into T_LOCALE(LOC_ID_C) values('en');
 insert into T_LOCALE(LOC_ID_C) values('fr');

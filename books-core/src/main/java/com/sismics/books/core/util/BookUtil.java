@@ -19,6 +19,7 @@ import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.DateTimeFormatterBuilder;
 import org.joda.time.format.DateTimeParser;
 
+import com.sismics.books.core.constant.ConfigType;
 import com.sismics.books.core.model.jpa.Book;
 
 /**
@@ -32,8 +33,7 @@ public class BookUtil {
     /**
      * Google Books API Search URL.
      */
-    // TODO Parametrize API key (T_CONFIG table and AppResource to modify it, warning if no key at all)
-    public static final String GOOGLE_BOOKS_SEARCH_FORMAT = "https://www.googleapis.com/books/v1/volumes?q=isbn:%s&key=AIzaSyC8CXDtLo-3ErzRF5rXTcAnLbtGjKLgUEE";
+    public static final String GOOGLE_BOOKS_SEARCH_FORMAT = "https://www.googleapis.com/books/v1/volumes?q=isbn:%s&key=%s";
     
     /**
      * Parser for multiple date formats;
@@ -59,7 +59,10 @@ public class BookUtil {
         // Sanitize ISBN (keep only digits)
         isbn = isbn.replaceAll("[^\\d]", "");
         
-        URL url = new URL(String.format(Locale.ENGLISH, GOOGLE_BOOKS_SEARCH_FORMAT, isbn));
+        // Retrieve Google API key
+        String key = ConfigUtil.getConfigStringValue(ConfigType.API_KEY_GOOGLE);
+        
+        URL url = new URL(String.format(Locale.ENGLISH, GOOGLE_BOOKS_SEARCH_FORMAT, isbn, key));
         URLConnection connection = url.openConnection();
         connection.setRequestProperty("Accept-Charset", "utf-8");
         connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.62 Safari/537.36");

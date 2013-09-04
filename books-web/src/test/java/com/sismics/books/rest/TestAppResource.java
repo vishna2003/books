@@ -4,6 +4,8 @@ import com.sismics.books.rest.filter.CookieAuthenticationFilter;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.ClientResponse.Status;
 import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.core.util.MultivaluedMapImpl;
+
 import junit.framework.Assert;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -33,14 +35,30 @@ public class TestAppResource extends BaseJerseyTest {
         response = appResource.get(ClientResponse.class);
         Assert.assertEquals(Status.OK, Status.fromStatusCode(response.getStatus()));
         JSONObject json = response.getEntity(JSONObject.class);
-        String currentVersion = json.getString("current_version");
-        Assert.assertNotNull(currentVersion);
-        String minVersion = json.getString("min_version");
-        Assert.assertNotNull(minVersion);
+        Assert.assertNotNull(json.getString("current_version"));
+        Assert.assertNotNull(json.getString("min_version"));
+        Assert.assertNotNull(json.getString("api_key_google"));
         Long freeMemory = json.getLong("free_memory");
         Assert.assertTrue(freeMemory > 0);
         Long totalMemory = json.getLong("total_memory");
         Assert.assertTrue(totalMemory > 0 && totalMemory > freeMemory);
+        
+        // Update config
+        appResource = resource().path("/app");
+        appResource.addFilter(new CookieAuthenticationFilter(adminAuthenticationToken));
+        MultivaluedMapImpl postParams = new MultivaluedMapImpl();
+        postParams.add("api_key_google", "new_key");
+        response = appResource.post(ClientResponse.class, postParams);
+        Assert.assertEquals(Status.OK, Status.fromStatusCode(response.getStatus()));
+
+        // Check the application info
+        appResource = resource().path("/app");
+        appResource.addFilter(new CookieAuthenticationFilter(adminAuthenticationToken));
+        response = appResource.get(ClientResponse.class);
+        response = appResource.get(ClientResponse.class);
+        Assert.assertEquals(Status.OK, Status.fromStatusCode(response.getStatus()));
+        json = response.getEntity(JSONObject.class);
+        Assert.assertEquals("new_key", json.getString("api_key_google"));
     }
 
     /**

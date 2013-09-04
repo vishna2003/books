@@ -368,9 +368,36 @@ public class BookResource extends BaseResource {
             tagDao.updateTagList(userBookId, tagSet);
         }
         
-        // Always return ok
+        // Return user book ID
         JSONObject response = new JSONObject();
         response.put("id", userBookId);
+        return Response.ok().entity(response).build();
+    }
+    
+    /**
+     * Set a book as read/unread.
+     * 
+     * @param id User book ID
+     * @param read Read state
+     * @return Response
+     * @throws JSONException
+     */
+    @POST
+    @Path("{id: [a-z0-9\\-]+}/read")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response read(
+            @PathParam("id") final String userBookId,
+            @FormParam("read") boolean read) throws JSONException {
+        // Get the user book
+        UserBookDao userBookDao = new UserBookDao();
+        UserBook userBook = userBookDao.getUserBook(userBookId);
+        
+        // Update the read date
+        userBook.setReadDate(read ? new Date() : null);
+        
+        // Always return ok
+        JSONObject response = new JSONObject();
+        response.put("status", "ok");
         return Response.ok().entity(response).build();
     }
 }
