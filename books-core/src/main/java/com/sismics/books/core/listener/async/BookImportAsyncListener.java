@@ -15,9 +15,9 @@ import com.google.common.eventbus.Subscribe;
 import com.sismics.books.core.dao.jpa.BookDao;
 import com.sismics.books.core.dao.jpa.UserBookDao;
 import com.sismics.books.core.event.BookImportedEvent;
+import com.sismics.books.core.model.context.AppContext;
 import com.sismics.books.core.model.jpa.Book;
 import com.sismics.books.core.model.jpa.UserBook;
-import com.sismics.books.core.util.BookUtil;
 import com.sismics.books.core.util.TransactionUtil;
 
 /**
@@ -78,9 +78,8 @@ public class BookImportAsyncListener {
                         if (book == null) {
                             // Try to get the book from a public API
                             try {
-                                book = BookUtil.searchBook(isbn);
+                                book = AppContext.getInstance().getBookDataService().searchBook(isbn);
                             } catch (Exception e) {
-                                log.error("Unable to find the book", e);
                                 continue;
                             }
                             

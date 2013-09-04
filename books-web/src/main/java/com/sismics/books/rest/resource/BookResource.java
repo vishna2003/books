@@ -43,7 +43,6 @@ import com.sismics.books.core.model.jpa.Book;
 import com.sismics.books.core.model.jpa.Tag;
 import com.sismics.books.core.model.jpa.User;
 import com.sismics.books.core.model.jpa.UserBook;
-import com.sismics.books.core.util.BookUtil;
 import com.sismics.books.core.util.DirectoryUtil;
 import com.sismics.books.core.util.jpa.PaginatedList;
 import com.sismics.books.core.util.jpa.PaginatedLists;
@@ -86,7 +85,7 @@ public class BookResource extends BaseResource {
         if (book == null) {
             // Try to get the book from a public API
             try {
-                book = BookUtil.searchBook(isbn);
+                book = AppContext.getInstance().getBookDataService().searchBook(isbn);
             } catch (Exception e) {
                 throw new ClientException("BookNotFound", e.getMessage(), e);
             }

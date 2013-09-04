@@ -11,6 +11,7 @@ import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.EventBus;
 import com.sismics.books.core.listener.async.BookImportAsyncListener;
 import com.sismics.books.core.listener.sync.DeadEventListener;
+import com.sismics.books.core.service.BookDataService;
 import com.sismics.util.EnvironmentUtil;
 
 /**
@@ -40,6 +41,11 @@ public class AppContext {
     private EventBus importEventBus;
     
     /**
+     * Service to fetch book informations.
+     */
+    private BookDataService bookDataService;
+    
+    /**
      * Asynchronous executors.
      */
     private List<ExecutorService> asyncExecutorList;
@@ -49,6 +55,9 @@ public class AppContext {
      */
     private AppContext() {
         resetEventBus();
+        
+        bookDataService = new BookDataService();
+        bookDataService.startAndWait();
     }
     
     /**
@@ -143,5 +152,14 @@ public class AppContext {
      */
     public EventBus getImportEventBus() {
         return importEventBus;
+    }
+
+    /**
+     * Getter of bookDataService.
+     * 
+     * @return bookDataService
+     */
+    public BookDataService getBookDataService() {
+        return bookDataService;
     }
 }

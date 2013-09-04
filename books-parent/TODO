@@ -1,7 +1,7 @@
 - Tags administration (client)
 - Settings (client)
 - List tags and search on them with state (client)
-- Fallback to OpenLibrary, Amazon API and throttle (server)
+- Fallback to OpenLibrary and throttle (server)
 - Set a book as read/unread (client)
 - Assign tags to books (client)
 - Search on read state (client/server)

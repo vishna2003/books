@@ -21,6 +21,7 @@ import org.codehaus.jettison.json.JSONObject;
 
 import com.sismics.books.core.constant.ConfigType;
 import com.sismics.books.core.dao.jpa.ConfigDao;
+import com.sismics.books.core.model.context.AppContext;
 import com.sismics.books.core.util.ConfigUtil;
 import com.sismics.books.core.util.jpa.PaginatedList;
 import com.sismics.books.core.util.jpa.PaginatedLists;
@@ -90,6 +91,8 @@ public class AppResource extends BaseResource {
         
         ConfigDao configDao = new ConfigDao();
         configDao.getById(ConfigType.API_KEY_GOOGLE).setValue(apiKeyGoogle);
+        
+        AppContext.getInstance().getBookDataService().initConfig();
         
         JSONObject response = new JSONObject();
         response.put("status", "ok");
