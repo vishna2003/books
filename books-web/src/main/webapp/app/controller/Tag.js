@@ -19,11 +19,11 @@ App.controller('Tag', function($scope, $state, Restangular) {
   /**
    * Returns total number of document from tag stats.
    */
-  $scope.getStatCount = function() {
+  /*$scope.getStatCount = function() {
     return _.reduce($scope.stats, function(memo, stat) {
       return memo + stat.count
     }, 0);
-  };
+  };*/
   
   /**
    * Validate a tag name for duplicate.
@@ -48,7 +48,7 @@ App.controller('Tag', function($scope, $state, Restangular) {
    * Delete a tag.
    */
   $scope.deleteTag = function(tag) {
-    if(confirm('Do you really want to delete this tag?')) {
+    if(confirm('Do you really want to delete this bookshelf?')) {
       Restangular.one('tag', tag.id).remove().then(function() {
         $scope.tags = _.reject($scope.tags, function(t) {
           return tag.id == t.id;
@@ -64,13 +64,13 @@ App.controller('Tag', function($scope, $state, Restangular) {
     // Update the server
     return Restangular.one('tag', tag.id).post('', tag).then(function () {
       // Update the stat object
-      var stat = _.find($scope.stats, function (t) {
+      /*var stat = _.find($scope.stats, function (t) {
         return tag.id == t.id;
       });
 
       if (stat) {
         _.extend(stat, tag);
-      }
+      }*/
     });
   };
 });

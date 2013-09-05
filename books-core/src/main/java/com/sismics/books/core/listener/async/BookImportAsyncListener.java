@@ -4,6 +4,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.text.MessageFormat;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -15,12 +18,16 @@ import au.com.bytecode.opencsv.CSVReader;
 import com.google.common.base.Strings;
 import com.google.common.eventbus.Subscribe;
 import com.sismics.books.core.dao.jpa.BookDao;
+import com.sismics.books.core.dao.jpa.TagDao;
 import com.sismics.books.core.dao.jpa.UserBookDao;
+import com.sismics.books.core.dao.jpa.dto.TagDto;
 import com.sismics.books.core.event.BookImportedEvent;
 import com.sismics.books.core.model.context.AppContext;
 import com.sismics.books.core.model.jpa.Book;
+import com.sismics.books.core.model.jpa.Tag;
 import com.sismics.books.core.model.jpa.UserBook;
 import com.sismics.books.core.util.TransactionUtil;
+import com.sismics.books.core.util.math.MathUtil;
 
 /**
  * Listener on books import request.
@@ -45,13 +52,14 @@ public class BookImportAsyncListener {
             log.info(MessageFormat.format("Books import requested event: {0}", bookImportedEvent.toString()));
         }
         
-        // Create books
+        // Create books and tags
         TransactionUtil.handle(new Runnable() {
             @Override
             public void run() {
                 CSVReader reader = null;
                 BookDao bookDao = new BookDao();
                 UserBookDao userBookDao = new UserBookDao();
+                TagDao tagDao = new TagDao();
                 try {
                     reader = new CSVReader(new FileReader(bookImportedEvent.getImportFile()));
                 } catch (FileNotFoundException e) {
@@ -104,9 +112,38 @@ public class BookImportAsyncListener {
                                 userBook.setCreateDate(formatter.parseDateTime(line[15]).toDate());
                             }
                             userBookDao.create(userBook);
-                            
-                            // TODO Import bookshelves in tags (and create them if necessary)
                         }
+                        
+                        // Create tags
+                        String[] bookshelfArray = line[16].split(",");
+                        Set<String> tagIdSet = new HashSet<String>();
+                        for (String bookshelf : bookshelfArray) {
+                            bookshelf = bookshelf.trim();
+                            if (Strings.isNullOrEmpty(bookshelf)) {
+                                continue;
+                            }
+                            
+                            Tag tag = tagDao.getByName(bookImportedEvent.getUser().getId(), bookshelf);
+                            if (tag == null) {
+                                tag = new Tag();
+                                tag.setName(bookshelf);
+                                tag.setColor(MathUtil.randomHexColor());
+                                tag.setUserId(bookImportedEvent.getUser().getId());
+                                tagDao.create(tag);
+                            }
+                            
+                            tagIdSet.add(tag.getId());
+                        }
+                        
+                        // Add tags to the user book
+                        if (tagIdSet.size() > 0) {
+                            List<TagDto> tagDtoList = tagDao.getByUserBookId(userBook.getId());
+                            for (TagDto tagDto : tagDtoList) {
+                                tagIdSet.add(tagDto.getId());
+                            }
+                            tagDao.updateTagList(userBook.getId(), tagIdSet);
+                        }
+                        
                         TransactionUtil.commit();
                     }
                 } catch (Exception e) {

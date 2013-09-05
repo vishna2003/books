@@ -243,9 +243,9 @@ public class BookResource extends BaseResource {
         criteria.setRead(read);
         criteria.setUserId(principal.getId());
         if (!Strings.isNullOrEmpty(tagName)) {
-            List<Tag> tagList = tagDao.findByName(principal.getId(), tagName);
-            if (tagList.size() > 0) {
-                criteria.setTagIdList(Lists.newArrayList(tagList.get(0).getId()));
+            Tag tag = tagDao.getByName(principal.getId(), tagName);
+            if (tag != null) {
+                criteria.setTagIdList(Lists.newArrayList(tag.getId()));
             }
         }
         try {

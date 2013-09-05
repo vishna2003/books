@@ -148,28 +148,52 @@ public class TestBookResource extends BaseJerseyTest {
         Assert.assertEquals(Status.OK, Status.fromStatusCode(response.getStatus()));
         books = json.getJSONArray("books");
         Assert.assertTrue(books.length() == 1);
+    }
+    
+    /**
+     * Test the book import resource.
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testBookImportResource() throws Exception {
+        // Login bookimport1
+        clientUtil.createUser("bookimport1");
+        String bookImport1Token = clientUtil.login("bookimport1");
         
         // Import a Goodreads CSV
-        bookResource = resource().path("/book/import");
-        bookResource.addFilter(new CookieAuthenticationFilter(book1Token));
+        WebResource bookResource = resource().path("/book/import");
+        bookResource.addFilter(new CookieAuthenticationFilter(bookImport1Token));
         FormDataMultiPart form = new FormDataMultiPart();
         InputStream goodreadsImport = this.getClass().getResourceAsStream("/import/goodreads.csv");
         FormDataBodyPart fdp = new FormDataBodyPart("file",
                 new BufferedInputStream(goodreadsImport),
                 MediaType.APPLICATION_OCTET_STREAM_TYPE);
         form.bodyPart(fdp);
-        response = bookResource.type(MediaType.MULTIPART_FORM_DATA).put(ClientResponse.class, form);
+        ClientResponse response = bookResource.type(MediaType.MULTIPART_FORM_DATA).put(ClientResponse.class, form);
         Assert.assertEquals(Status.OK, Status.fromStatusCode(response.getStatus()));
         
         // List all books
         bookResource = resource().path("/book/list");
-        bookResource.addFilter(new CookieAuthenticationFilter(book1Token));
-        getParams = new MultivaluedMapImpl();
+        bookResource.addFilter(new CookieAuthenticationFilter(bookImport1Token));
+        MultivaluedMapImpl getParams = new MultivaluedMapImpl();
         getParams.add("limit", 15);
+        getParams.add("sort_column", 1);
         response = bookResource.queryParams(getParams).get(ClientResponse.class);
-        json = response.getEntity(JSONObject.class);
+        JSONObject json = response.getEntity(JSONObject.class);
         Assert.assertEquals(Status.OK, Status.fromStatusCode(response.getStatus()));
-        books = json.getJSONArray("books");
-        Assert.assertEquals(11, books.length());
+        JSONArray books = json.getJSONArray("books");
+        Assert.assertEquals(10, books.length());
+        Assert.assertEquals("owned", books.getJSONObject(2).getJSONArray("tags").getJSONObject(0).getString("name"));
+        
+        // Get all tags
+        WebResource tagResource = resource().path("/tag/list");
+        tagResource.addFilter(new CookieAuthenticationFilter(bookImport1Token));
+        response = tagResource.get(ClientResponse.class);
+        Assert.assertEquals(Status.OK, Status.fromStatusCode(response.getStatus()));
+        json = response.getEntity(JSONObject.class);
+        JSONArray tags = json.getJSONArray("tags");
+        Assert.assertEquals(2, tags.length());
+        Assert.assertEquals("owned", tags.getJSONObject(0).getString("name"));
     }
 }

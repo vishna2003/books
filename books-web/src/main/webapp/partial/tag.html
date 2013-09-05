@@ -5,11 +5,11 @@
         <span colorpicker class="btn btn-default" data-color="#3a87ad" ng-model="tag.color" ng-style="{ 'background': tag.color }">&nbsp;</span>
       </div>
       <div class="form-group">
-        <input type="text" class="form-control" name="name" placeholder="New tag"
+        <input type="text" class="form-control" name="name" placeholder="New bookshelf"
             ng-maxlength="36" required ng-model="tag.name" ui-validate="{duplicate: 'validateDuplicate($value)', space: '!$value || $value.indexOf(\' \') == -1' }">
       </div>
       <button type="submit" class="btn btn-primary" ng-disabled="!tagForm.$valid" ng-click="addTag()">Add</button>
-      <span class="help-block" ng-show="tagForm.name.$error.duplicate">This tag already exists</span>
+      <span class="help-block" ng-show="tagForm.name.$error.duplicate">This bookshelf already exists</span>
       <span class="help-block" ng-show="tagForm.name.$error.space">Space are not allowed</span>
     </form>
 
