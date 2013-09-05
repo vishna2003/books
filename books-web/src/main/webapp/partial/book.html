@@ -14,9 +14,14 @@
         <div class="form-group">
           <label class="sr-only" for="inputSearch">Search</label>
           <div class="col-md-12">
-            <input tyle="text" class="form-control" ng-model="search" id="inputSearch" placeholder="Search" />
+            <input tyle="text" class="form-control" ng-model="search.text" id="inputSearch" placeholder="Search" />
           </div>
         </div>
+        <div class="checkbox">
+					<label>
+					<input type="checkbox" ng-model="search.read"> Show only read books
+					</label>
+				</div>
       </form>
     </div>
   </div>

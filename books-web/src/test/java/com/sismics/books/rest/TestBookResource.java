@@ -142,6 +142,7 @@ public class TestBookResource extends BaseJerseyTest {
         getParams = new MultivaluedMapImpl();
         getParams.add("tag", "Tag3");
         getParams.add("search", "vision");
+        getParams.add("read", false);
         response = bookResource.queryParams(getParams).get(ClientResponse.class);
         json = response.getEntity(JSONObject.class);
         Assert.assertEquals(Status.OK, Status.fromStatusCode(response.getStatus()));

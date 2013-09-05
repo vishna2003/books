@@ -131,6 +131,9 @@ public class UserBookDao {
                 index++;
             }
         }
+        if (criteria.getRead() != null) {
+            criteriaList.add(" ub.UBK_READDATE_D is " + (criteria.getRead() ? "not" : "") + " null ");
+        }
         parameterMap.put("userId", criteria.getUserId());
         
         if (!criteriaList.isEmpty()) {

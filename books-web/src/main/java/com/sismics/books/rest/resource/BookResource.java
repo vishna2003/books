@@ -226,6 +226,7 @@ public class BookResource extends BaseResource {
             @QueryParam("sort_column") Integer sortColumn,
             @QueryParam("asc") Boolean asc,
             @QueryParam("search") String search,
+            @QueryParam("read") Boolean read,
             @QueryParam("tag") String tagName) throws JSONException {
         if (!authenticate()) {
             throw new ForbiddenClientException();
@@ -239,6 +240,7 @@ public class BookResource extends BaseResource {
         SortCriteria sortCriteria = new SortCriteria(sortColumn, asc);
         UserBookCriteria criteria = new UserBookCriteria();
         criteria.setSearch(search);
+        criteria.setRead(read);
         criteria.setUserId(principal.getId());
         if (!Strings.isNullOrEmpty(tagName)) {
             List<Tag> tagList = tagDao.findByName(principal.getId(), tagName);

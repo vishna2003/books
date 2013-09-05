@@ -11,7 +11,10 @@ App.controller('Book', function($scope, $timeout, Restangular, $stateParams) {
   $scope.asc = true;
   $scope.offset = 0;
   $scope.limit = 20;
-  $scope.search = '';
+  $scope.search = {
+    text: '',
+    read: false
+  };
   $scope.loading = false;
   $scope.books = [];
   $scope.total = -1;
@@ -50,7 +53,8 @@ App.controller('Book', function($scope, $timeout, Restangular, $stateParams) {
       limit: $scope.limit,
       sort_column: $scope.sortColumn,
       asc: $scope.asc,
-      search: $scope.search,
+      search: $scope.search.text,
+      read: $scope.search.read ? true : null,
       tag: $stateParams.tag
     }).then(function(data) {
           $scope.books = $scope.books.concat(data.books);

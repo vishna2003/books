@@ -20,6 +20,11 @@ public class UserBookCriteria {
     private String search;
     
     /**
+     * Read state.
+     */
+    private Boolean read;
+    
+    /**
      * Tag IDs.
      */
     private List<String> tagIdList;
@@ -76,5 +81,21 @@ public class UserBookCriteria {
      */
     public void setTagIdList(List<String> tagIdList) {
         this.tagIdList = tagIdList;
+    }
+
+    /**
+     * Getter of read.
+     * @return read
+     */
+    public Boolean getRead() {
+        return read;
+    }
+
+    /**
+     * Setter of read.
+     * @param read read
+     */
+    public void setRead(Boolean read) {
+        this.read = read;
     }
 }
