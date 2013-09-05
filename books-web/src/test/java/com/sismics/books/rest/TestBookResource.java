@@ -33,6 +33,15 @@ public class TestBookResource extends BaseJerseyTest {
      */
     @Test
     public void testBookResource() throws Exception {
+        // Login admin
+        String adminAuthenticationToken = clientUtil.login("admin", "admin", false);
+        
+        // Put a real key to avoid 400 error on Google API
+        WebResource appResource = resource().path("/app");
+        appResource.addFilter(new CookieAuthenticationFilter(adminAuthenticationToken));
+        MultivaluedMapImpl postParams = new MultivaluedMapImpl();
+        postParams.add("api_key_google", "AIzaSyC8CXDtLo-3ErzRF5rXTcAnLbtGjKLgUEE");
+        
         // Login book1
         clientUtil.createUser("book1");
         String book1Token = clientUtil.login("book1");
@@ -40,7 +49,7 @@ public class TestBookResource extends BaseJerseyTest {
         // Create a tag
         WebResource tagResource = resource().path("/tag");
         tagResource.addFilter(new CookieAuthenticationFilter(book1Token));
-        MultivaluedMapImpl postParams = new MultivaluedMapImpl();
+        postParams = new MultivaluedMapImpl();
         postParams.add("name", "Tag3");
         postParams.add("color", "#ff0000");
         ClientResponse response = tagResource.put(ClientResponse.class, postParams);
