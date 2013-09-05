@@ -286,7 +286,7 @@ public class BookResource extends BaseResource {
     }
     
     /**
-     * Imports books from Bookreads.
+     * Imports books.
      * 
      * @param fileBodyPart File to import
      * @return Response

@@ -1,3 +1,4 @@
 - Api key: POST /app to modify it, warning if no key at all (client)
 - Share book lists (client/server)
 - Refetch book data at will (client/server)
+- Delete a book (client/server)
