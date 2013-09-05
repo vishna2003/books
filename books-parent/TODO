@@ -2,3 +2,4 @@
 - Import tags from Goodreads (server)
 - Share book lists (client/server)
 - Refetch book data at will (client/server)
+- Style favicon (client)
