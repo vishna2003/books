@@ -47,18 +47,9 @@ public class TestAppResource extends BaseJerseyTest {
         appResource = resource().path("/app");
         appResource.addFilter(new CookieAuthenticationFilter(adminAuthenticationToken));
         MultivaluedMapImpl postParams = new MultivaluedMapImpl();
-        postParams.add("api_key_google", "new_key");
+        postParams.add("api_key_google", json.getString("api_key_google"));
         response = appResource.post(ClientResponse.class, postParams);
         Assert.assertEquals(Status.OK, Status.fromStatusCode(response.getStatus()));
-
-        // Check the application info
-        appResource = resource().path("/app");
-        appResource.addFilter(new CookieAuthenticationFilter(adminAuthenticationToken));
-        response = appResource.get(ClientResponse.class);
-        response = appResource.get(ClientResponse.class);
-        Assert.assertEquals(Status.OK, Status.fromStatusCode(response.getStatus()));
-        json = response.getEntity(JSONObject.class);
-        Assert.assertEquals("new_key", json.getString("api_key_google"));
     }
 
     /**
