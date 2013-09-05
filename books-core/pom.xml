@@ -126,6 +126,15 @@
     <!-- Production profile -->
     <profile>
       <id>prod</id>
+      
+      <build>
+        <resources>
+          <resource>
+            <directory>src/prod/resources</directory>
+            <filtering>true</filtering>
+          </resource>
+        </resources>
+      </build>
     </profile>
 
     <!-- Demo profile -->

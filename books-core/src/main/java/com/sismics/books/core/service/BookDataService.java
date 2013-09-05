@@ -242,7 +242,10 @@ public class BookDataService extends AbstractIdleService {
         book.setId(UUID.randomUUID().toString());
         book.setTitle(details.get("title").getTextValue());
         book.setSubtitle(details.has("subtitle") ? details.get("subtitle").getTextValue() : null);
-        book.setAuthor(details.has("authors") && details.get("authors").size() > 0 ? details.get("authors").get(0).get("name").getTextValue() : null);
+        if (!details.has("authors") || details.get("authors").size() == 0) {
+            throw new Exception("Book without author for ISBN: " + isbn);
+        }
+        book.setAuthor(details.get("authors").get(0).get("name").getTextValue());
         book.setDescription(details.has("first_sentence") ? details.get("first_sentence").get("value").getTextValue() : null);
         book.setIsbn10(details.has("isbn_10") && details.get("isbn_10").size() > 0 ? details.get("isbn_10").get(0).getTextValue() : null);
         book.setIsbn13(details.has("isbn_13") && details.get("isbn_13").size() > 0 ? details.get("isbn_13").get(0).getTextValue() : null);
@@ -252,6 +255,9 @@ public class BookDataService extends AbstractIdleService {
             book.setLanguage(languageCode.name());
         }
         book.setPageCount(details.has("number_of_pages") ? details.get("number_of_pages").getLongValue() : null);
+        if (!details.has("publish_date")) {
+            throw new Exception("Book without publication date for ISBN: " + isbn);
+        }
         book.setPublishDate(details.has("publish_date") ? formatter.parseDateTime(details.get("publish_date").getTextValue()).toDate() : null);
         
         // Download the thumbnail
