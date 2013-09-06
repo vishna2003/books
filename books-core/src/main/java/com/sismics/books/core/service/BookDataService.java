@@ -236,16 +236,17 @@ public class BookDataService extends AbstractIdleService {
         
         JsonNode bookNode = rootNode.get("records").getElements().next();
         JsonNode details = bookNode.get("details").get("details");
+        JsonNode data = bookNode.get("data");
         
         // Build the book
         Book book = new Book();
         book.setId(UUID.randomUUID().toString());
         book.setTitle(details.get("title").getTextValue());
         book.setSubtitle(details.has("subtitle") ? details.get("subtitle").getTextValue() : null);
-        if (!details.has("authors") || details.get("authors").size() == 0) {
+        if (!data.has("authors") || data.get("authors").size() == 0) {
             throw new Exception("Book without author for ISBN: " + isbn);
         }
-        book.setAuthor(details.get("authors").get(0).get("name").getTextValue());
+        book.setAuthor(data.get("authors").get(0).get("name").getTextValue());
         book.setDescription(details.has("first_sentence") ? details.get("first_sentence").get("value").getTextValue() : null);
         book.setIsbn10(details.has("isbn_10") && details.get("isbn_10").size() > 0 ? details.get("isbn_10").get(0).getTextValue() : null);
         book.setIsbn13(details.has("isbn_13") && details.get("isbn_13").size() > 0 ? details.get("isbn_13").get(0).getTextValue() : null);
