@@ -1,4 +1,4 @@
-- Api key: POST /app to modify it, warning if no key at all (client)
-- Share book lists (client/server)
-- Refetch book data at will (client/server)
 - Delete a book (client/server)
+- Api key: POST /app to modify it, warning if no key at all (client)
+- Refetch book data at will (client/server)
+- FB Open Graph integration (client/server)
