@@ -37,7 +37,6 @@ App.controller('Book', function($scope, $timeout, Restangular, $stateParams) {
    * Load books.
    */
   $scope.pageBooks = function(next) {
-    console.log($scope.total == $scope.books.length);
     if ($scope.loading || $scope.total == $scope.books.length) {
       // Avoid spamming the server
       return;

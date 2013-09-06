@@ -4,15 +4,15 @@
  * Book view controller.
  */
 App.controller('BookView', function($scope, $q, $timeout, $stateParams, Restangular) {
-  // Load book
-  var bookPromise = Restangular.one('book', $stateParams.id).get().then(function(data) {
-    $scope.book = data;
-  })
-
   // Load tags
   var tagsPromise = Restangular.one('tag/list').get().then(function(data) {
     $scope.tags = data.tags;
   });
+  
+  // Load book
+  var bookPromise = Restangular.one('book', $stateParams.id).get().then(function(data) {
+    $scope.book = data;
+  })
 
   // Wait for everything to load
   $q.all(bookPromise, tagsPromise).then(function() {
@@ -30,7 +30,7 @@ App.controller('BookView', function($scope, $q, $timeout, $stateParams, Restangu
 
       // Watch tags activation
       $scope.$watch('tags', function(prev, next) {
-        if (prev !== next) {
+        if (prev && next && !angular.equals(prev, next)) {
           Restangular.one('book', $stateParams.id).post('', {
             tags: _.pluck(_.where($scope.tags, { active: true }), 'id')
           })
