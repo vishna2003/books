@@ -89,7 +89,7 @@ public class BookResource extends BaseResource {
             try {
                 book = AppContext.getInstance().getBookDataService().searchBook(isbn);
             } catch (Exception e) {
-                throw new ClientException("BookNotFound", e.getMessage(), e);
+                throw new ClientException("BookNotFound", e.getCause().getMessage(), e);
             }
             
             // Save the new book in database
