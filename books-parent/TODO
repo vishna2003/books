@@ -2,3 +2,12 @@
 - Api key: POST /app to modify it, warning if no key at all (client)
 - Refetch book data at will (client/server)
 - FB Open Graph integration (client/server)
+
+Facebook Graph API
+------------------
+
+https://developers.facebook.com/tools/explorer?method=GET&path=book.reads%3Fids%3D1036202288
+
+/me/friends to fetch friends
+/book.reads?ids=1036202288,... to fetch friends' books
+/10150684831643097 to fetch books' ISBN
