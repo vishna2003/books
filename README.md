@@ -22,7 +22,7 @@ Features
 License
 -------
 
-Books is released under the terms of the GPL license. See `COPYING` for more
+Books is released under the terms of the GPL license. See `LICENSE` for more
 information or see <http://opensource.org/licenses/GPL-2.0>.
 
 How to build Books from the sources
