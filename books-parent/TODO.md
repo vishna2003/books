@@ -15,6 +15,6 @@ Facebook Graph API
 
 https://developers.facebook.com/tools/explorer?method=GET&path=book.reads%3Fids%3D1036202288
 
-/me/friends to fetch friends
-/book.reads?ids=1036202288,... to fetch friends' books
-/10150684831643097 to fetch books' ISBN
+me/friends?fields=first_name,last_name,id to fetch friends
+book.reads?ids=1036202288,...&fields=data to fetch friends' books
+?ids=10150805569322417,10150684831643097&fields=data to fetch books' ISBN
