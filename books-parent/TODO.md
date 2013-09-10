@@ -2,7 +2,7 @@ TODO
 ====
 
 - Api key: POST /app to modify it, warning if no key at all (client)
-- Submit a custom cover URL (client)
+- Rescale cover to 192px width max if necessary (server)
 - Add a book manually (client/server)
 - FB Open Graph integration (client/server)
 

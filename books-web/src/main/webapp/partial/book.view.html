@@ -17,7 +17,8 @@
     </ul>
 
     <p class="pull-left">
-      <img ng-if="book" ng-src="api/book/{{ book.id }}/cover" class="cover-book-view" />
+      <img ng-if="book && !coverChanging" ng-src="api/book/{{ book.id }}/cover" class="cover-book-view" ng-click="editCover()" />
+      <img src="img/loader.gif" ng-if="coverChanging" />
     </p>
     <p class="clearfix">{{ book.description }}</p>
 

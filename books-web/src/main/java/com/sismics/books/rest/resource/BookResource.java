@@ -339,7 +339,7 @@ public class BookResource extends BaseResource {
 
         return Response.ok(inputStream)
                 .header("Content-Type", "image/jpeg")
-                .header("Expires", new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z").format(new Date().getTime() + 3600000 * 24))
+                .header("Expires", new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z").format(new Date().getTime() + 3600000))
                 .build();
     }
     

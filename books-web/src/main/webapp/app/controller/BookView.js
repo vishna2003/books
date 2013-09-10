@@ -22,6 +22,27 @@ App.controller('BookView', function($scope, $q, $timeout, $state, $stateParams, 
     $state.transitionTo('bookedit', { id: $stateParams.id });
   }
 
+  /**
+   * Edit the book cover.
+   */
+  $scope.editCover = function() {
+    var url = prompt('Book cover image URL (only JPEG supported)');
+    if (url) {
+      $scope.coverChanging = true;
+
+      Restangular.one('book', $stateParams.id).post('cover', {url: url}).then(function() {
+        alert('Book cover successfully updated');
+        $scope.coverChanging = false;
+      }, function() {
+        alert('Error downloading the book cover, please check the URL');
+        $scope.coverChanging = false;
+      });
+    }
+  };
+
+  // True if the cover is in the process of being changed
+  $scope.coverChanging = false;
+
   // Load tags
   var tagsPromise = Restangular.one('tag/list').get().then(function(data) {
     $scope.tags = data.tags;
