@@ -86,6 +86,22 @@ public class UserBookDao {
     }
     
     /**
+     * Return a user book
+     * @param userBookId User book ID
+     * @return User book
+     */
+    public UserBook getUserBook(String userBookId) {
+        EntityManager em = ThreadLocalContext.get().getEntityManager();
+        Query q = em.createQuery("select ub from UserBook ub where ub.id = :userBookId and ub.deleteDate is null");
+        q.setParameter("userBookId", userBookId);
+        try {
+            return (UserBook) q.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+    
+    /**
      * Return a user book by book ID and user ID.
      * 
      * @param bookId Book ID

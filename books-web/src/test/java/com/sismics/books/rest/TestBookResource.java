@@ -86,6 +86,14 @@ public class TestBookResource extends BaseJerseyTest {
         response = bookResource.post(ClientResponse.class, postParams);
         Assert.assertEquals(Status.OK, Status.fromStatusCode(response.getStatus()));
         
+        // Update the book cover
+        bookResource = resource().path("/book/" + book1Id + "/cover");
+        bookResource.addFilter(new CookieAuthenticationFilter(book1Token));
+        postParams = new MultivaluedMapImpl();
+        postParams.add("url", "http://covers.openlibrary.org/b/id/976764-M.jpg");
+        response = bookResource.post(ClientResponse.class, postParams);
+        Assert.assertEquals(Status.OK, Status.fromStatusCode(response.getStatus()));
+        
         // Get the book
         bookResource = resource().path("/book/" + book1Id);
         bookResource.addFilter(new CookieAuthenticationFilter(book1Token));
@@ -126,7 +134,7 @@ public class TestBookResource extends BaseJerseyTest {
         Assert.assertEquals(Status.OK, Status.fromStatusCode(response.getStatus()));
         InputStream is = response.getEntityInputStream();
         byte[] fileBytes = ByteStreams.toByteArray(is);
-        Assert.assertEquals(14406, fileBytes.length);
+        Assert.assertEquals(14951, fileBytes.length);
         
         // List all books
         bookResource = resource().path("/book/list");

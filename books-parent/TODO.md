@@ -5,7 +5,7 @@ TODO
 - Redirect to the book once added (client)
 - Edit the full book data: title, subtitle, author, description, isbn10, isbn13, page_count, language, publish_date (client)
 - Api key: POST /app to modify it, warning if no key at all (client)
-- Submit a custom cover URL (client/server)
+- Submit a custom cover URL (client)
 - Add a book manually (client/server)
 - FB Open Graph integration (client/server)
 

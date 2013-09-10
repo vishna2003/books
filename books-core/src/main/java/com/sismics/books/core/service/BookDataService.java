@@ -1,5 +1,6 @@
 package com.sismics.books.core.service;
 
+import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
@@ -34,6 +35,8 @@ import com.sismics.books.core.model.jpa.Book;
 import com.sismics.books.core.util.ConfigUtil;
 import com.sismics.books.core.util.DirectoryUtil;
 import com.sismics.books.core.util.TransactionUtil;
+import com.sismics.books.core.util.mime.MimeType;
+import com.sismics.books.core.util.mime.MimeTypeUtil;
 
 /**
  * Service to fetch book informations. 
@@ -200,18 +203,12 @@ public class BookDataService extends AbstractIdleService {
         JsonNode imageLinks = volumeInfo.get("imageLinks");
         if (imageLinks != null && imageLinks.has("thumbnail")) {
             String imageUrl = imageLinks.get("thumbnail").getTextValue();
-            URLConnection imageConnection = new URL(imageUrl).openConnection();
-            imageConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.62 Safari/537.36");
-            imageConnection.setConnectTimeout(10000);
-            imageConnection.setReadTimeout(10000);
-            InputStream imageInputStream = imageConnection.getInputStream();
-            Path imagePath = Paths.get(DirectoryUtil.getBookDirectory().getPath(), book.getId());
-            Files.copy(imageInputStream, imagePath, StandardCopyOption.REPLACE_EXISTING);
+            downloadThumbnail(book, imageUrl);
         }
         
         return book;
     }
-    
+
     /**
      * Search a book by its ISBN using Open Library.
      * 
@@ -264,16 +261,32 @@ public class BookDataService extends AbstractIdleService {
         // Download the thumbnail
         if (details.has("covers") && details.get("covers").size() > 0) {
             String imageUrl = "http://covers.openlibrary.org/b/id/" + details.get("covers").get(0).getLongValue() + "-M.jpg";
-            URLConnection imageConnection = new URL(imageUrl).openConnection();
-            imageConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.62 Safari/537.36");
-            imageConnection.setConnectTimeout(10000);
-            imageConnection.setReadTimeout(10000);
-            InputStream imageInputStream = imageConnection.getInputStream();
-            Path imagePath = Paths.get(DirectoryUtil.getBookDirectory().getPath(), book.getId());
-            Files.copy(imageInputStream, imagePath, StandardCopyOption.REPLACE_EXISTING);
+            downloadThumbnail(book, imageUrl);
         }
         
         return book;
+    }
+    
+    /**
+     * Download and overwrite the thumbnail for a book.
+     * 
+     * @param book Book
+     * @param imageUrl Image URL
+     * @throws Exception
+     */
+    public void downloadThumbnail(Book book, String imageUrl) throws Exception {
+        URLConnection imageConnection = new URL(imageUrl).openConnection();
+        imageConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.62 Safari/537.36");
+        imageConnection.setConnectTimeout(10000);
+        imageConnection.setReadTimeout(10000);
+        try (InputStream inputStream = new BufferedInputStream(imageConnection.getInputStream())) {
+            if (MimeTypeUtil.guessMimeType(inputStream) != MimeType.IMAGE_JPEG) {
+                throw new Exception("Only JPEG images are supported as thumbnails");
+            }
+            
+            Path imagePath = Paths.get(DirectoryUtil.getBookDirectory().getPath(), book.getId());
+            Files.copy(inputStream, imagePath, StandardCopyOption.REPLACE_EXISTING);
+        }
     }
     
     @Override

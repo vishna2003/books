@@ -323,7 +323,7 @@ public class BookResource extends BaseResource {
             @PathParam("id") final String userBookId) throws JSONException {
         // Get the user book
         UserBookDao userBookDao = new UserBookDao();
-        UserBook userBook = userBookDao.getUserBook(userBookId, principal.getId());
+        UserBook userBook = userBookDao.getUserBook(userBookId);
         
         // Get the cover image
         File file = Paths.get(DirectoryUtil.getBookDirectory().getPath(), userBook.getBookId()).toFile();
@@ -342,6 +342,47 @@ public class BookResource extends BaseResource {
                 .header("Content-Type", "image/jpeg")
                 .header("Expires", new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z").format(new Date().getTime() + 3600000 * 24))
                 .build();
+    }
+    
+    /**
+     * Updates a book cover.
+     * 
+     * @param id User book ID
+     * @return Response
+     * @throws JSONException
+     */
+    @POST
+    @Path("{id: [a-z0-9\\-]+}/cover")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateCover(
+            @PathParam("id") String userBookId,
+            @FormParam("url") String imageUrl) throws JSONException {
+        if (!authenticate()) {
+            throw new ForbiddenClientException();
+        }
+        
+        // Get the user book
+        UserBookDao userBookDao = new UserBookDao();
+        UserBook userBook = userBookDao.getUserBook(userBookId, principal.getId());
+        if (userBook == null) {
+            throw new ClientException("BookNotFound", "Book not found with id " + userBookId);
+        }
+        
+        // Get the book
+        BookDao bookDao = new BookDao();
+        Book book = bookDao.getById(userBook.getBookId());
+
+        // Download the new cover
+        try {
+            AppContext.getInstance().getBookDataService().downloadThumbnail(book, imageUrl);
+        } catch (Exception e) {
+            throw new ClientException("DownloadCoverError", "Error downloading the cover image");
+        }
+        
+        // Always return ok
+        JSONObject response = new JSONObject();
+        response.put("status", "ok");
+        return Response.ok(response).build();
     }
     
     /**
@@ -366,6 +407,7 @@ public class BookResource extends BaseResource {
         if (!authenticate()) {
             throw new ForbiddenClientException();
         }
+        
         JSONObject response = new JSONObject();
         List<JSONObject> books = new ArrayList<>();
         
@@ -484,6 +526,10 @@ public class BookResource extends BaseResource {
     public Response read(
             @PathParam("id") final String userBookId,
             @FormParam("read") boolean read) throws JSONException {
+        if (!authenticate()) {
+            throw new ForbiddenClientException();
+        }
+        
         // Get the user book
         UserBookDao userBookDao = new UserBookDao();
         UserBook userBook = userBookDao.getUserBook(userBookId, principal.getId());
