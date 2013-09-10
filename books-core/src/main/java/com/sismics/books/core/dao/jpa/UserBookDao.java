@@ -2,6 +2,7 @@ package com.sismics.books.core.dao.jpa;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +49,24 @@ public class UserBookDao {
     }
 
     /**
+     * Deletes a user book.
+     * 
+     * @param id User book ID
+     */
+    public void delete(String id) {
+        EntityManager em = ThreadLocalContext.get().getEntityManager();
+            
+        // Get the user book
+        Query q = em.createQuery("select ub from UserBook ub where ub.id = :id and ub.deleteDate is null");
+        q.setParameter("id", id);
+        UserBook userBookDb = (UserBook) q.getSingleResult();
+        
+        // Delete the user book
+        Date dateNow = new Date();
+        userBookDb.setDeleteDate(dateNow);
+    }
+    
+    /**
      * Return a user book.
      * 
      * @param userBookId User book ID
@@ -78,22 +97,6 @@ public class UserBookDao {
         Query q = em.createQuery("select ub from UserBook ub where ub.bookId = :bookId and ub.userId = :userId and ub.deleteDate is null");
         q.setParameter("bookId", bookId);
         q.setParameter("userId", userId);
-        try {
-            return (UserBook) q.getSingleResult();
-        } catch (NoResultException e) {
-            return null;
-        }
-    }
-
-    /**
-     * Return a user book
-     * @param userBookId User book ID
-     * @return User book
-     */
-    public UserBook getUserBook(String userBookId) {
-        EntityManager em = ThreadLocalContext.get().getEntityManager();
-        Query q = em.createQuery("select ub from UserBook ub where ub.id = :userBookId and ub.deleteDate is null");
-        q.setParameter("userBookId", userBookId);
         try {
             return (UserBook) q.getSingleResult();
         } catch (NoResultException e) {

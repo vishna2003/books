@@ -73,6 +73,8 @@ public class TestBookResource extends BaseJerseyTest {
         bookResource.addFilter(new CookieAuthenticationFilter(book1Token));
         postParams = new MultivaluedMapImpl();
         postParams.add("tags", tag3Id);
+        postParams.add("page_count", 362);
+        postParams.add("author", "C. Sagan");
         response = bookResource.post(ClientResponse.class, postParams);
         Assert.assertEquals(Status.OK, Status.fromStatusCode(response.getStatus()));
         
@@ -92,9 +94,9 @@ public class TestBookResource extends BaseJerseyTest {
         json = response.getEntity(JSONObject.class);
         Assert.assertEquals("Pale Blue Dot", json.getString("title"));
         Assert.assertEquals("A Vision of the Human Future in Space", json.getString("subtitle"));
-        Assert.assertEquals("Carl Sagan", json.getString("author"));
+        Assert.assertEquals("C. Sagan", json.getString("author"));
         Assert.assertEquals(852073200000l, json.getLong("publish_date"));
-        Assert.assertEquals(360, json.getLong("page_count"));
+        Assert.assertEquals(362, json.getLong("page_count"));
         Assert.assertTrue(json.getString("description").contains("the world beyond Earth"));
         Assert.assertEquals("en", json.getString("language"));
         Assert.assertEquals("0345376595", json.getString("isbn10"));
@@ -148,6 +150,22 @@ public class TestBookResource extends BaseJerseyTest {
         Assert.assertEquals(Status.OK, Status.fromStatusCode(response.getStatus()));
         books = json.getJSONArray("books");
         Assert.assertTrue(books.length() == 1);
+        
+        // Delete the book
+        bookResource = resource().path("/book/" + book1Id);
+        bookResource.addFilter(new CookieAuthenticationFilter(book1Token));
+        response = bookResource.delete(ClientResponse.class);
+        Assert.assertEquals(Status.OK, Status.fromStatusCode(response.getStatus()));
+        
+        // List all books
+        bookResource = resource().path("/book/list");
+        bookResource.addFilter(new CookieAuthenticationFilter(book1Token));
+        getParams = new MultivaluedMapImpl();
+        response = bookResource.queryParams(getParams).get(ClientResponse.class);
+        json = response.getEntity(JSONObject.class);
+        Assert.assertEquals(Status.OK, Status.fromStatusCode(response.getStatus()));
+        books = json.getJSONArray("books");
+        Assert.assertTrue(books.length() == 0);
     }
     
     /**
