@@ -3,7 +3,18 @@
 /**
  * Book view controller.
  */
-App.controller('BookView', function($scope, $q, $timeout, $stateParams, Restangular) {
+App.controller('BookView', function($scope, $q, $timeout, $state, $stateParams, Restangular) {
+  /**
+   * Delete the book.
+   */
+  $scope.deleteBook = function() {
+    if(confirm('Do you really want to delete this book?')) {
+      Restangular.one('book', $stateParams.id).remove().then(function() {
+        $state.transitionTo('book');
+      });
+    }
+  };
+
   // Load tags
   var tagsPromise = Restangular.one('tag/list').get().then(function(data) {
     $scope.tags = data.tags;

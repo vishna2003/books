@@ -27,6 +27,7 @@ import org.joda.time.format.DateTimeParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Strings;
 import com.google.common.util.concurrent.AbstractIdleService;
 import com.google.common.util.concurrent.RateLimiter;
 import com.neovisionaries.i18n.LanguageCode;
@@ -124,6 +125,14 @@ public class BookDataService extends AbstractIdleService {
     public Book searchBook(String rawIsbn) throws Exception {
         // Sanitize ISBN (keep only digits)
         final String isbn = rawIsbn.replaceAll("[^\\d]", "");
+        
+        // Validate ISBN
+        if (Strings.isNullOrEmpty(isbn)) {
+            throw new Exception("ISBN is empty");
+        }
+        if (isbn.length() != 10 && isbn.length() != 13) {
+            throw new Exception("ISBN must be 10 or 13 characters long");
+        }
 
         Callable<Book> callable = new Callable<Book>() {
             
@@ -286,6 +295,8 @@ public class BookDataService extends AbstractIdleService {
             
             Path imagePath = Paths.get(DirectoryUtil.getBookDirectory().getPath(), book.getId());
             Files.copy(inputStream, imagePath, StandardCopyOption.REPLACE_EXISTING);
+            
+            // TODO Rescale to 192px width max if necessary
         }
     }
     
