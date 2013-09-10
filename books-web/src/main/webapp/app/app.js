@@ -42,6 +42,15 @@ var App = angular.module('books',
       }
     }
   })
+  .state('bookedit', {
+    url: '/book/edit/:id',
+    views: {
+      'page': {
+        templateUrl: 'partial/book.edit.html',
+        controller: 'BookEdit'
+      }
+    }
+  })
   .state('bookadd', {
     url: '/book/add/:isbn',
     views: {

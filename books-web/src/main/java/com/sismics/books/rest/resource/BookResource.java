@@ -28,7 +28,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -197,28 +196,28 @@ public class BookResource extends BaseResource {
         Book book = bookDao.getById(userBook.getBookId());
         
         // Update the book
-        if (!StringUtils.isEmpty(title)) {
+        if (title != null) {
             book.setTitle(title);
         }
-        if (!StringUtils.isEmpty(subtitle)) {
+        if (subtitle != null) {
             book.setSubtitle(subtitle);
         }
-        if (!StringUtils.isEmpty(author)) {
+        if (author != null) {
             book.setAuthor(author);
         }
-        if (!StringUtils.isEmpty(description)) {
+        if (description != null) {
             book.setDescription(description);
         }
-        if (!StringUtils.isEmpty(isbn10)) {
+        if (isbn10 != null) {
             book.setIsbn10(isbn10);
         }
-        if (!StringUtils.isEmpty(isbn13)) {
+        if (isbn13 != null) {
             book.setIsbn13(isbn13);
         }
         if (pageCount != null) {
             book.setPageCount(pageCount);
         }
-        if (!StringUtils.isEmpty(language)) {
+        if (language != null) {
             book.setLanguage(language);
         }
         if (publishDate != null) {

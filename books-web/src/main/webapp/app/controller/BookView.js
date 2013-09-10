@@ -15,6 +15,13 @@ App.controller('BookView', function($scope, $q, $timeout, $state, $stateParams, 
     }
   };
 
+  /**
+   * Edit the book.
+   */
+  $scope.editBook = function() {
+    $state.transitionTo('bookedit', { id: $stateParams.id });
+  }
+
   // Load tags
   var tagsPromise = Restangular.one('tag/list').get().then(function(data) {
     $scope.tags = data.tags;
