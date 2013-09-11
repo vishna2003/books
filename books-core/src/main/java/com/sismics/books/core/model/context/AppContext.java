@@ -65,6 +65,9 @@ public class AppContext {
         
         bookDataService = new BookDataService();
         bookDataService.startAndWait();
+        
+        facebookService = new FacebookService();
+        facebookService.startAndWait();
     }
     
     /**

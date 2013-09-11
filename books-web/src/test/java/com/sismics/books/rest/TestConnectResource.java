@@ -20,20 +20,20 @@ import com.sun.jersey.core.util.MultivaluedMapImpl;
  * @author jtremeaux
  */
 public class TestConnectResource extends BaseJerseyTest {
-    private final static FacebookUser carol = new FacebookUser("100005453561833",
-            "carol_juhfbdq_fergiesky@tfbnw.net",
-            "Carol Amedgfjeefch Fergiesky",
-            "AAACqZC7qjq3EBAKloNIUzNH4AKbZBEBZBks3QZBZA8GNGe8GL8igU2jmUncHK7WBAzSpFWZAz7bU5QDyUxsSzp2QZAS8vkrUluC1S3mONovnAZDZD");
+    private final static FacebookUser carol = new FacebookUser("100006592720905",
+            "zhukajl_carrierostein_1378902582@tfbnw.net",
+            "Carol Amfeibgbjije Carrierostein",
+            "CAAFgAhxSoTsBAFMGpAZBgkqpu8XORKLaL4eoA2qjNLcRJJkA3ru2qGcrISuurWuTMgkjNFDH4K2orsoLmdMqurZBPB2VzSZA06h5T1I2UaN4XCrqQdFlwJF196tNZCK6cstzCIrpZAFArYetpJLF6TEyrsC1zoNzz1dVKUcYzblUHh7mZC9e49ieOGl58JSiylCQfZBOCHSAAZDZD");
     
-    private final static FacebookUser charlie = new FacebookUser("100005479540707",
-            "charlie_tjrujdr_chengman@tfbnw.net",
-            "Charlie Amedfbaffgad Chengman",
-            "AAACqZC7qjq3EBADZA4PJ8d7eAFtO7jbBh1FQtf9PwdyjQidAa5pZCWDmkbemS64UwRd9A0roioIau8ykVMAgyLLMx0dLGxoWqWSUzIwmwZDZD");
+    private final static FacebookUser charlie = new FacebookUser("100006740402697",
+            "gpowenc_letuchyberg_1378902581@tfbnw.net",
+            "Charlie Amfgdjdjbfig Letuchyberg",
+            "CAAFgAhxSoTsBAJZCjuZAg1ZBdAZB1Y54SXVRR64wDYIHcU7Cpb2mabPWZCnZCfNx377fGwvay4OrpUmXnJ9PjZCCL5p09ctLHnjPz3iOFo7KTNTkJPFaRx9dK1zXaHF04JxnIgxlOwzm0ga6wzLiSxLj51D23IZCRlzXzVPVOscsUXUdrqd5aMUzRYZCcuZAECmy10XaU4DfAAqQZDZD");
     
-    private final static FacebookUser bob = new FacebookUser("100005440092007",
-            "bob_qyqryqf_sidhuson@tfbnw.net",
-            "Bob Amedgfhfidab Sidhuson",
-            "AAACqZC7qjq3EBAFRFZBdwQJZAa5bu2qNiHVq8datgB30iiuzkzEs0ptIiMACPpeTwiMvRdZAIVyZBOuW0fIbrvCYaztozmCJnGPL6plUhSgZDZD");
+    private final static FacebookUser bob = new FacebookUser("100006660036207",
+            "iwipwxz_warmanberg_1378902579@tfbnw.net",
+            "Bill Amfffkcfbjg Warmanberg",
+            "CAAFgAhxSoTsBAK1aqCN3nzt5SoD3E73ktDvrcsCrcodbefbwjxUmCtvswQxXkL2PH2DqQcVLJpkQrI9ezZCLwAheX14EsSoLgwOna6ZBxYy2skyREngmb1KerFxHT6rH6BomCODwkaKaTjIZC7TnqcMlLvaE15WcMYbdLSNXwwPrhu4WoUzHUeyl4NIM0raAkRrF0CXJQZDZD");
     
     /**
      * Test of connected application list.
@@ -58,25 +58,25 @@ public class TestConnectResource extends BaseJerseyTest {
     }
 
     /**
-     * Test de la connexion à Facebook.
+     * Test of Facebook connection.
      * 
      * @throws JSONException
      */
     @Test
     public void testFacebook() throws JSONException {
-        // Crée et connecte l'utilisateur carol_fb
+        // Create and connect user carol_fb
         clientUtil.createUser("carol_fb");
         String carolFbAuthToken = clientUtil.login("carol_fb");
         
-        // Crée et connecte l'utilisateur charlie_fb
+        // Create and connect user charlie_fb
         clientUtil.createUser("charlie_fb");
         String charlieFbAuthToken = clientUtil.login("charlie_fb");
         
-        // Crée et connecte l'utilisateur bob_fb
+        // Create and connect user bob_fb
         clientUtil.createUser("bob_fb");
         String bobFbAuthToken = clientUtil.login("bob_fb");
         
-        // Ajoute l'application Myspace : KO (application inexistante)
+        // Add Myspace application : KO (application unknown)
         WebResource connectResource = resource().path("/connect/myspace/add");
         connectResource.addFilter(new CookieAuthenticationFilter(carolFbAuthToken));
         MultivaluedMapImpl postParams = new MultivaluedMapImpl();
@@ -86,20 +86,20 @@ public class TestConnectResource extends BaseJerseyTest {
         JSONObject json = response.getEntity(JSONObject.class);
         Assert.assertEquals("AppNotFound", json.getString("type"));
 
-        // Carol liste ses applications : application Facebook non connectée
+        // Carol lists its applications : Facebook application not connected
         WebResource listResource = resource().path("/connect/list");
         listResource.addFilter(new CookieAuthenticationFilter(carolFbAuthToken));
         response = listResource.get(ClientResponse.class);
         Assert.assertEquals(Status.OK, Status.fromStatusCode(response.getStatus()));
         json = response.getEntity(JSONObject.class);
         JSONArray apps = json.getJSONArray("apps");
-        Assert.assertEquals(3, apps.length());
+        Assert.assertEquals(1, apps.length());
         JSONObject app = (JSONObject) apps.get(0);
         Assert.assertEquals("FACEBOOK", app.optString("id"));
         Assert.assertEquals(false, app.optBoolean("connected"));
         Assert.assertEquals(false, app.optBoolean("sharing"));
 
-        // Carol ajoute l'application Facebook
+        // Carol add Facebook application
         connectResource = resource().path("/connect/facebook/add");
         connectResource.addFilter(new CookieAuthenticationFilter(carolFbAuthToken));
         postParams = new MultivaluedMapImpl();
@@ -108,7 +108,7 @@ public class TestConnectResource extends BaseJerseyTest {
         Assert.assertEquals(Status.OK, Status.fromStatusCode(response.getStatus()));
         AppContext.getInstance().waitForAsync();
 
-        // Carol liste ses applications : application Facebook connectée
+        // Carol lists its application : Facebook application connected
         listResource = resource().path("/connect/list");
         listResource.addFilter(new CookieAuthenticationFilter(carolFbAuthToken));
         response = listResource.get(ClientResponse.class);
@@ -121,7 +121,7 @@ public class TestConnectResource extends BaseJerseyTest {
         Assert.assertEquals(true, app.optBoolean("connected"));
         Assert.assertEquals(true, app.optBoolean("sharing"));
 
-        // Carol liste ses contacts Facebook 
+        // Carol lists its Facebook contacts 
         WebResource contactListResource = resource().path("/connect/facebook/contact/list");
         contactListResource.addFilter(new CookieAuthenticationFilter(carolFbAuthToken));
         response = contactListResource.get(ClientResponse.class);
@@ -133,7 +133,7 @@ public class TestConnectResource extends BaseJerseyTest {
         Assert.assertEquals(charlie.id, contact.optString("external_id"));
         Assert.assertEquals(charlie.fullName, contact.optString("full_name"));
 
-        // Carol recherche un contact parmi ses contacts FB : recherche négative 
+        // Carol searches FB contacts : nothing 
         contactListResource = resource().path("/connect/facebook/contact/list");
         contactListResource.addFilter(new CookieAuthenticationFilter(carolFbAuthToken));
         MultivaluedMapImpl getParams = new MultivaluedMapImpl();
@@ -144,7 +144,7 @@ public class TestConnectResource extends BaseJerseyTest {
         contacts = json.getJSONArray("contacts");
         Assert.assertEquals(0, contacts.length());
 
-        // Carol recherche un contact parmi ses contacts FB
+        // Carol searches FB contacts
         contactListResource = resource().path("/connect/facebook/contact/list");
         contactListResource.addFilter(new CookieAuthenticationFilter(carolFbAuthToken));
         getParams = new MultivaluedMapImpl();
@@ -155,7 +155,7 @@ public class TestConnectResource extends BaseJerseyTest {
         contacts = json.getJSONArray("contacts");
         Assert.assertEquals(1, contacts.length());
 
-        // Carol désactive le partage de sa connexion à Facebook
+        // Carol disable Facebook sharing
         connectResource = resource().path("/connect/facebook/update");
         connectResource.addFilter(new CookieAuthenticationFilter(carolFbAuthToken));
         postParams = new MultivaluedMapImpl();
