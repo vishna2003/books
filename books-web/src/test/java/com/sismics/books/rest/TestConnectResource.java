@@ -1,12 +1,19 @@
 package com.sismics.books.rest;
 
+import java.util.ResourceBundle;
+
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.sismics.books.core.model.context.AppContext;
+import com.restfb.DefaultFacebookClient;
+import com.restfb.DefaultWebRequestor;
+import com.restfb.FacebookClient;
+import com.restfb.WebRequestor;
+import com.restfb.WebRequestor.Response;
+import com.sismics.books.core.util.ConfigUtil;
 import com.sismics.books.rest.filter.CookieAuthenticationFilter;
 import com.sismics.books.rest.model.FacebookUser;
 import com.sun.jersey.api.client.ClientResponse;
@@ -20,21 +27,6 @@ import com.sun.jersey.core.util.MultivaluedMapImpl;
  * @author jtremeaux
  */
 public class TestConnectResource extends BaseJerseyTest {
-    private final static FacebookUser carol = new FacebookUser("100006592720905",
-            "zhukajl_carrierostein_1378902582@tfbnw.net",
-            "Carol Amfeibgbjije Carrierostein",
-            "CAAFgAhxSoTsBAFMGpAZBgkqpu8XORKLaL4eoA2qjNLcRJJkA3ru2qGcrISuurWuTMgkjNFDH4K2orsoLmdMqurZBPB2VzSZA06h5T1I2UaN4XCrqQdFlwJF196tNZCK6cstzCIrpZAFArYetpJLF6TEyrsC1zoNzz1dVKUcYzblUHh7mZC9e49ieOGl58JSiylCQfZBOCHSAAZDZD");
-    
-    private final static FacebookUser charlie = new FacebookUser("100006740402697",
-            "gpowenc_letuchyberg_1378902581@tfbnw.net",
-            "Charlie Amfgdjdjbfig Letuchyberg",
-            "CAAFgAhxSoTsBAJZCjuZAg1ZBdAZB1Y54SXVRR64wDYIHcU7Cpb2mabPWZCnZCfNx377fGwvay4OrpUmXnJ9PjZCCL5p09ctLHnjPz3iOFo7KTNTkJPFaRx9dK1zXaHF04JxnIgxlOwzm0ga6wzLiSxLj51D23IZCRlzXzVPVOscsUXUdrqd5aMUzRYZCcuZAECmy10XaU4DfAAqQZDZD");
-    
-    private final static FacebookUser bob = new FacebookUser("100006660036207",
-            "iwipwxz_warmanberg_1378902579@tfbnw.net",
-            "Bill Amfffkcfbjg Warmanberg",
-            "CAAFgAhxSoTsBAK1aqCN3nzt5SoD3E73ktDvrcsCrcodbefbwjxUmCtvswQxXkL2PH2DqQcVLJpkQrI9ezZCLwAheX14EsSoLgwOna6ZBxYy2skyREngmb1KerFxHT6rH6BomCODwkaKaTjIZC7TnqcMlLvaE15WcMYbdLSNXwwPrhu4WoUzHUeyl4NIM0raAkRrF0CXJQZDZD");
-    
     /**
      * Test of connected application list.
      * 
@@ -63,18 +55,31 @@ public class TestConnectResource extends BaseJerseyTest {
      * @throws JSONException
      */
     @Test
-    public void testFacebook() throws JSONException {
+    public void testFacebook() throws Exception {
+        ResourceBundle configBundle = ConfigUtil.getConfigBundle();
+        String facebookAppId = configBundle.getString("app_key.facebook.id");
+        String facebookAppSecret = configBundle.getString("app_key.facebook.secret");
+        FacebookClient facebookClient = new DefaultFacebookClient();
+        String appAccessToken = facebookClient.obtainAppAccessToken(facebookAppId, facebookAppSecret).getAccessToken();
+        WebRequestor webRequestor = new DefaultWebRequestor();
+        
+        // Create Carol
+        Response fbResponse = webRequestor.executePost("https://graph.facebook.com/" + facebookAppId + "/accounts/test-users", "installed=true&permissions=email,publish_stream,read_stream&name=Carol Oneill&method=post&access_token=" + appAccessToken);
+        JSONObject testUser = new JSONObject(fbResponse.getBody());
+        FacebookUser carol = new FacebookUser(testUser.getString("id"), testUser.getString("email"), "Carol Oneill", testUser.getString("access_token"));
+        
+        // Create Charlie
+        fbResponse = webRequestor.executePost("https://graph.facebook.com/" + facebookAppId + "/accounts/test-users", "installed=true&permissions=email,publish_stream,read_stream&name=Charlie Dylan&method=post&access_token=" + appAccessToken);
+        testUser = new JSONObject(fbResponse.getBody());
+        FacebookUser charlie = new FacebookUser(testUser.getString("id"), testUser.getString("email"), "Charlie Dylan", testUser.getString("access_token"));
+        
+        // Carol is friend with Charlie
+        fbResponse = webRequestor.executePost("https://graph.facebook.com/" + carol.id + "/friends/" + charlie.id, "method=post&access_token=" + carol.accessToken);
+        fbResponse = webRequestor.executePost("https://graph.facebook.com/" + charlie.id + "/friends/" + carol.id, "method=post&access_token=" + charlie.accessToken);
+        
         // Create and connect user carol_fb
         clientUtil.createUser("carol_fb");
         String carolFbAuthToken = clientUtil.login("carol_fb");
-        
-        // Create and connect user charlie_fb
-        clientUtil.createUser("charlie_fb");
-        String charlieFbAuthToken = clientUtil.login("charlie_fb");
-        
-        // Create and connect user bob_fb
-        clientUtil.createUser("bob_fb");
-        String bobFbAuthToken = clientUtil.login("bob_fb");
         
         // Add Myspace application : KO (application unknown)
         WebResource connectResource = resource().path("/connect/myspace/add");
@@ -106,7 +111,6 @@ public class TestConnectResource extends BaseJerseyTest {
         postParams.putSingle("access_token", carol.accessToken);
         response = connectResource.post(ClientResponse.class, postParams);
         Assert.assertEquals(Status.OK, Status.fromStatusCode(response.getStatus()));
-        AppContext.getInstance().waitForAsync();
 
         // Carol lists its application : Facebook application connected
         listResource = resource().path("/connect/list");
@@ -115,7 +119,7 @@ public class TestConnectResource extends BaseJerseyTest {
         Assert.assertEquals(Status.OK, Status.fromStatusCode(response.getStatus()));
         json = response.getEntity(JSONObject.class);
         apps = json.getJSONArray("apps");
-        Assert.assertEquals(3, apps.length());
+        Assert.assertEquals(1, apps.length());
         app = (JSONObject) apps.get(0);
         Assert.assertEquals("FACEBOOK", app.optString("id"));
         Assert.assertEquals(true, app.optBoolean("connected"));
@@ -162,63 +166,49 @@ public class TestConnectResource extends BaseJerseyTest {
         response = connectResource.post(ClientResponse.class, postParams);
         Assert.assertEquals(Status.OK, Status.fromStatusCode(response.getStatus()));
 
-        // Carol liste ses applications : l'activité n'est pas partagée sur l'application Facebook
+        // Carol lists its application : sharing is disabled
         listResource = resource().path("/connect/list");
         listResource.addFilter(new CookieAuthenticationFilter(carolFbAuthToken));
         response = listResource.get(ClientResponse.class);
         Assert.assertEquals(Status.OK, Status.fromStatusCode(response.getStatus()));
         json = response.getEntity(JSONObject.class);
         apps = json.getJSONArray("apps");
-        Assert.assertEquals(3, apps.length());
+        Assert.assertEquals(1, apps.length());
         app = (JSONObject) apps.get(0);
         Assert.assertEquals("FACEBOOK", app.optString("id"));
         Assert.assertEquals(true, app.optBoolean("connected"));
         Assert.assertEquals(false, app.optBoolean("sharing"));
-
-        // Charlie ajoute l'application Facebook
-        connectResource = resource().path("/connect/facebook/add");
-        connectResource.addFilter(new CookieAuthenticationFilter(charlieFbAuthToken));
-        postParams = new MultivaluedMapImpl();
-        postParams.putSingle("access_token", charlie.accessToken);
-        response = connectResource.post(ClientResponse.class, postParams);
-        Assert.assertEquals(Status.OK, Status.fromStatusCode(response.getStatus()));
-        AppContext.getInstance().waitForAsync();
-
-        // Bob ajoute l'application Facebook
-        connectResource = resource().path("/connect/facebook/add");
-        connectResource.addFilter(new CookieAuthenticationFilter(bobFbAuthToken));
-        postParams = new MultivaluedMapImpl();
-        postParams.putSingle("access_token", bob.accessToken);
-        response = connectResource.post(ClientResponse.class, postParams);
-        Assert.assertEquals(Status.OK, Status.fromStatusCode(response.getStatus()));
-        AppContext.getInstance().waitForAsync();
-
-        // Carol supprime sa connexion à Facebook
+        
+        // Carol deletes Facebook connection
         connectResource = resource().path("/connect/facebook/remove");
         connectResource.addFilter(new CookieAuthenticationFilter(carolFbAuthToken));
         postParams = new MultivaluedMapImpl();
         response = connectResource.post(ClientResponse.class, postParams);
         Assert.assertEquals(Status.OK, Status.fromStatusCode(response.getStatus()));
 
-        // Carol liste ses applications : application Facebook non connectée
+        // Carol lists its application : Facebook application disconnected
         listResource = resource().path("/connect/list");
         listResource.addFilter(new CookieAuthenticationFilter(carolFbAuthToken));
         response = listResource.get(ClientResponse.class);
         Assert.assertEquals(Status.OK, Status.fromStatusCode(response.getStatus()));
         json = response.getEntity(JSONObject.class);
         apps = json.getJSONArray("apps");
-        Assert.assertEquals(3, apps.length());
+        Assert.assertEquals(1, apps.length());
         app = (JSONObject) apps.get(0);
         Assert.assertEquals("FACEBOOK", app.optString("id"));
         Assert.assertEquals(false, app.optBoolean("connected"));
         Assert.assertEquals(false, app.optBoolean("sharing"));
 
-        // Carol recherche un contact parmi ses contacts FB : KO (pas connecté) 
+        // Carol searches in its Facebook contacts : KO (not connected) 
         contactListResource = resource().path("/connect/facebook/contact/list");
         contactListResource.addFilter(new CookieAuthenticationFilter(carolFbAuthToken));
         response = contactListResource.get(ClientResponse.class);
         Assert.assertEquals(Status.BAD_REQUEST, Status.fromStatusCode(response.getStatus()));
         json = response.getEntity(JSONObject.class);
         Assert.assertEquals("AppNotConnected", json.getString("type"));
+        
+        // Delete Facebook test users
+        fbResponse = webRequestor.executePost("https://graph.facebook.com/" + carol.id, "method=delete&access_token=" + appAccessToken);
+        fbResponse = webRequestor.executePost("https://graph.facebook.com/" + charlie.id, "method=delete&access_token=" + appAccessToken);
     }
 }

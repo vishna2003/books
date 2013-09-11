@@ -139,6 +139,7 @@ public class FacebookService extends AbstractScheduledService {
         boolean installed = false;
         boolean email = false;
         boolean publishStream = false;
+        boolean readStream = false;
         for (JsonObject data : dataList.getData()) {
             if (data.optInt("installed") == 1) {
                 installed = true;
@@ -149,6 +150,9 @@ public class FacebookService extends AbstractScheduledService {
             if (data.optInt("publish_stream") == 1) {
                 publishStream = true;
             }
+            if (data.optInt("read_stream") == 1) {
+                readStream = true;
+            }
         }
         if (!installed) {
             throw new PermissionException("Permission not found: installed");
@@ -158,6 +162,9 @@ public class FacebookService extends AbstractScheduledService {
         }
         if (!publishStream) {
             throw new PermissionException("Permission not found: publish_stream");
+        }
+        if (!readStream) {
+            throw new PermissionException("Permission not found: read_stream");
         }
     }
     

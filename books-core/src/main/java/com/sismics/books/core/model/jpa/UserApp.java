@@ -39,7 +39,7 @@ public class UserApp {
     /**
      * OAuth access token.
      */
-    @Column(name = "USA_ACCESSTOKEN_C", length = 100)
+    @Column(name = "USA_ACCESSTOKEN_C", length = 255)
     private String accessToken;
     
     /**

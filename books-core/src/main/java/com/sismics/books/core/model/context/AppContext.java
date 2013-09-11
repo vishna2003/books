@@ -80,10 +80,10 @@ public class AppContext {
         asyncExecutorList = new ArrayList<ExecutorService>();
         
         asyncEventBus = newAsyncEventBus();
+        asyncEventBus.register(new UserAppCreatedAsyncListener());
         
         importEventBus = newAsyncEventBus();
         importEventBus.register(new BookImportAsyncListener());
-        importEventBus.register(new UserAppCreatedAsyncListener());
     }
 
     /**
@@ -98,29 +98,6 @@ public class AppContext {
         return instance;
     }
     
-    /**
-     * Wait for termination of all asynchronous events.
-     * /!\ Must be used only in unit tests and never a multi-user environment. 
-     */
-    public void waitForAsync() {
-        if (EnvironmentUtil.isUnitTest()) {
-            return;
-        }
-        try {
-            for (ExecutorService executor : asyncExecutorList) {
-                // Shutdown executor, don't accept any more tasks (can cause error with nested events)
-                try {
-                    executor.shutdown();
-                    executor.awaitTermination(60, TimeUnit.SECONDS);
-                } catch (InterruptedException e) {
-                    // NOP
-                }
-            }
-        } finally {
-            resetEventBus();
-        }
-    }
-
     /**
      * Creates a new asynchronous event bus.
      * 
