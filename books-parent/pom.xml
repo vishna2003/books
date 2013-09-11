@@ -32,6 +32,7 @@
     <org.hibernate.hibernate.version>4.1.0.Final</org.hibernate.hibernate.version>
     <commons-dbcp.version>1.4</commons-dbcp.version>
     <joda-time.joda-time.version>2.2</joda-time.joda-time.version>
+    <com.restfb.restfb.version>1.6.12</com.restfb.restfb.version>
     <com.neovisionaries.nv-i18n.version>1.5</com.neovisionaries.nv-i18n.version>
 
     <org.eclipse.jetty.jetty-server.version>8.1.10.v20130312</org.eclipse.jetty.jetty-server.version>
@@ -313,6 +314,12 @@
         <groupId>joda-time</groupId>
         <artifactId>joda-time</artifactId>
         <version>${joda-time.joda-time.version}</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>com.restfb</groupId>
+        <artifactId>restfb</artifactId>
+        <version>${com.restfb.restfb.version}</version>
       </dependency>
 	  
     </dependencies>

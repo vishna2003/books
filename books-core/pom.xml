@@ -87,6 +87,11 @@
       <artifactId>nv-i18n</artifactId>
     </dependency>
     
+    <dependency>
+      <groupId>com.restfb</groupId>
+      <artifactId>restfb</artifactId>
+    </dependency>
+    
     <!-- Test dependencies -->
     <dependency>
       <groupId>junit</groupId>

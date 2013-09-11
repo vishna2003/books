@@ -14,5 +14,8 @@
     <class>com.sismics.books.core.model.jpa.RoleBaseFunction</class>
     <class>com.sismics.books.core.model.jpa.Book</class>
     <class>com.sismics.books.core.model.jpa.UserBook</class>
+    <class>com.sismics.books.core.model.jpa.App</class>
+    <class>com.sismics.books.core.model.jpa.UserApp</class>
+    <class>com.sismics.books.core.model.jpa.UserContact</class>
   </persistence-unit>
 </persistence>

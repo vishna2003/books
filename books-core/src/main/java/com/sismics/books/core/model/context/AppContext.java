@@ -10,8 +10,10 @@ import java.util.concurrent.TimeUnit;
 import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.EventBus;
 import com.sismics.books.core.listener.async.BookImportAsyncListener;
+import com.sismics.books.core.listener.async.UserAppCreatedAsyncListener;
 import com.sismics.books.core.listener.sync.DeadEventListener;
 import com.sismics.books.core.service.BookDataService;
+import com.sismics.books.core.service.FacebookService;
 import com.sismics.util.EnvironmentUtil;
 
 /**
@@ -46,6 +48,11 @@ public class AppContext {
     private BookDataService bookDataService;
     
     /**
+     * Facebook interaction service.
+     */
+    private FacebookService facebookService;
+    
+    /**
      * Asynchronous executors.
      */
     private List<ExecutorService> asyncExecutorList;
@@ -73,6 +80,7 @@ public class AppContext {
         
         importEventBus = newAsyncEventBus();
         importEventBus.register(new BookImportAsyncListener());
+        importEventBus.register(new UserAppCreatedAsyncListener());
     }
 
     /**
@@ -161,5 +169,14 @@ public class AppContext {
      */
     public BookDataService getBookDataService() {
         return bookDataService;
+    }
+    
+    /**
+     * Getter of facebookService.
+     * 
+     * @return facebookService
+     */
+    public FacebookService getFacebookService() {
+        return facebookService;
     }
 }
