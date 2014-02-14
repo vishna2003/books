@@ -16,6 +16,9 @@ import com.sismics.books.util.PreferenceUtil;
 
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * A fragment representing a single Book detail screen.
  * This fragment is either contained in a {@link com.sismics.books.activity.BookListActivity}
@@ -57,7 +60,16 @@ public class BookDetailFragment extends Fragment {
             @Override
             public void onSuccess(JSONObject book) {
                 aq.id(R.id.author).text(book.optString("author"));
-                aq.id(R.id.title).text(book.optString("title"));
+                aq.id(R.id.title).text(book.optString("title") + " " + book.optString("subtitle", ""));
+                long publishDate = book.optLong("publish_date", 0);
+                if (publishDate != 0) {
+                    aq.id(R.id.publish_date).text(new SimpleDateFormat("yyyy").format(new Date(publishDate)));
+                }
+                aq.id(R.id.isbn10).text(book.optString("isbn10"));
+                aq.id(R.id.isbn13).text(book.optString("isbn13"));
+                aq.id(R.id.page_count).text("" + book.optInt("page_count"));
+                aq.id(R.id.language).text(book.optString("language"));
+
                 String coverUrl = PreferenceUtil.getServerUrl(getActivity()) + "/api/book/" + book.optString("id") + "/cover";
                 aq.id(R.id.imgCover).image(new BitmapAjaxCallback()
                         .url(coverUrl)
