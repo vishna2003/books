@@ -80,7 +80,7 @@ public class BookResource extends BaseResource {
         }
         
         // Validate input data
-        isbn = ValidationUtil.validateLength(isbn, "isbn", 10, 13, false);
+        ValidationUtil.validateRequired(isbn, "isbn");
         
         // Fetch the book
         BookDao bookDao = new BookDao();

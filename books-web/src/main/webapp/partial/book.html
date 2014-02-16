@@ -34,6 +34,9 @@
           <div class="image">
             <img ng-src="api/book/{{ book.id }}/cover" title="{{ book.title }}" />
             <span title="Read book" class="glyphicon glyphicon-ok book-read" ng-if="book.read_date"></span>
+            <ul class="book-tags">
+              <li ng-repeat="tag in book.tags" ng-style="{ background: tag.color }"><span>{{ tag.name }}</span></li>
+            </ul>
           </div>
           <div class="caption">
             <p class="text-primary text-center">{{ book.title }}</p>

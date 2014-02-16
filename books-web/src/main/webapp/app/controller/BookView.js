@@ -31,7 +31,6 @@ App.controller('BookView', function($scope, $q, $timeout, $state, $stateParams, 
       $scope.coverChanging = true;
 
       Restangular.one('book', $stateParams.id).post('cover', {url: url}).then(function() {
-        alert('Book cover successfully updated');
         $scope.coverChanging = false;
       }, function() {
         alert('Error downloading the book cover, please check the URL');
