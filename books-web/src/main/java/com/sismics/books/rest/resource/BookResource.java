@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -148,6 +149,120 @@ public class BookResource extends BaseResource {
     }
     
     /**
+     * Add a book book manually.
+     * 
+     * @param title Title
+     * @param description Description
+     * @return Response
+     * @throws JSONException
+     */
+    @PUT
+    @Path("manual")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response add(
+            @FormParam("title") String title,
+            @FormParam("subtitle") String subtitle,
+            @FormParam("author") String author,
+            @FormParam("description") String description,
+            @FormParam("isbn10") String isbn10,
+            @FormParam("isbn13") String isbn13,
+            @FormParam("page_count") Long pageCount,
+            @FormParam("language") String language,
+            @FormParam("publish_date") String publishDateStr,
+            @FormParam("tags") List<String> tagList) throws JSONException {
+        if (!authenticate()) {
+            throw new ForbiddenClientException();
+        }
+        
+        // Validate input data
+        title = ValidationUtil.validateLength(title, "title", 1, 255, false);
+        subtitle = ValidationUtil.validateLength(subtitle, "subtitle", 1, 255, true);
+        author = ValidationUtil.validateLength(author, "author", 1, 255, false);
+        description = ValidationUtil.validateLength(description, "description", 1, 4000, true);
+        isbn10 = ValidationUtil.validateLength(isbn10, "isbn10", 10, 10, true);
+        isbn13 = ValidationUtil.validateLength(isbn13, "isbn13", 13, 13, true);
+        language = ValidationUtil.validateLength(language, "language", 2, 2, true);
+        Date publishDate = ValidationUtil.validateDate(publishDateStr, "publish_date", false);
+        
+        if (Strings.isNullOrEmpty(isbn10) && Strings.isNullOrEmpty(isbn13)) {
+            throw new ClientException("ValidationError", "At least one ISBN number is mandatory");
+        }
+        
+        // Check if this book is not already in database
+        BookDao bookDao = new BookDao();
+        Book bookIsbn10 = bookDao.getByIsbn(isbn10);
+        Book bookIsbn13 = bookDao.getByIsbn(isbn13);
+        if (bookIsbn10 != null || bookIsbn13 != null) {
+            throw new ClientException("BookAlreadyAdded", "Book already added");
+        }
+        
+        // Create the book
+        Book book = new Book();
+        book.setId(UUID.randomUUID().toString());
+        
+        if (title != null) {
+            book.setTitle(title);
+        }
+        if (subtitle != null) {
+            book.setSubtitle(subtitle);
+        }
+        if (author != null) {
+            book.setAuthor(author);
+        }
+        if (description != null) {
+            book.setDescription(description);
+        }
+        if (isbn10 != null) {
+            book.setIsbn10(isbn10);
+        }
+        if (isbn13 != null) {
+            book.setIsbn13(isbn13);
+        }
+        if (pageCount != null) {
+            book.setPageCount(pageCount);
+        }
+        if (language != null) {
+            book.setLanguage(language);
+        }
+        if (publishDate != null) {
+            book.setPublishDate(publishDate);
+        }
+        
+        bookDao.create(book);
+        
+        // Create the user book
+        UserBookDao userBookDao = new UserBookDao();
+        UserBook userBook = new UserBook();
+        userBook.setUserId(principal.getId());
+        userBook.setBookId(book.getId());
+        userBook.setCreateDate(new Date());
+        userBookDao.create(userBook);
+        
+        // Update tags
+        if (tagList != null) {
+            TagDao tagDao = new TagDao();
+            Set<String> tagSet = new HashSet<>();
+            Set<String> tagIdSet = new HashSet<>();
+            List<Tag> tagDbList = tagDao.getByUserId(principal.getId());
+            for (Tag tagDb : tagDbList) {
+                tagIdSet.add(tagDb.getId());
+            }
+            for (String tagId : tagList) {
+                if (!tagIdSet.contains(tagId)) {
+                    throw new ClientException("TagNotFound", MessageFormat.format("Tag not found: {0}", tagId));
+                }
+                tagSet.add(tagId);
+            }
+            tagDao.updateTagList(userBook.getId(), tagSet);
+        }
+        
+        // Returns the book ID
+        JSONObject response = new JSONObject();
+        response.put("id", userBook.getId());
+        return Response.ok().entity(response).build();
+    }
+    
+    /**
      * Updates the book.
      * 
      * @param title Title
@@ -194,6 +309,21 @@ public class BookResource extends BaseResource {
         
         // Get the book
         Book book = bookDao.getById(userBook.getBookId());
+        
+        // Check that new ISBN number are not already in database
+        if (!Strings.isNullOrEmpty(isbn10) && book.getIsbn10() != null && !book.getIsbn10().equals(isbn10)) {
+            Book bookIsbn10 = bookDao.getByIsbn(isbn10);
+            if (bookIsbn10 != null) {
+                throw new ClientException("BookAlreadyAdded", "Book already added");
+            }
+        }
+        
+        if (!Strings.isNullOrEmpty(isbn13) && book.getIsbn13() != null && !book.getIsbn13().equals(isbn13)) {
+            Book bookIsbn13 = bookDao.getByIsbn(isbn13);
+            if (bookIsbn13 != null) {
+                throw new ClientException("BookAlreadyAdded", "Book already added");
+            }
+        }
         
         // Update the book
         if (title != null) {
@@ -242,7 +372,7 @@ public class BookResource extends BaseResource {
             tagDao.updateTagList(userBookId, tagSet);
         }
         
-        // Always return ok
+        // Returns the book ID
         JSONObject response = new JSONObject();
         response.put("id", userBookId);
         return Response.ok().entity(response).build();
@@ -286,7 +416,9 @@ public class BookResource extends BaseResource {
         book.put("isbn10", bookDb.getIsbn10());
         book.put("isbn13", bookDb.getIsbn13());
         book.put("language", bookDb.getLanguage());
-        book.put("publish_date", bookDb.getPublishDate().getTime());
+        if (bookDb.getPublishDate() != null) {
+            book.put("publish_date", bookDb.getPublishDate().getTime());
+        }
         book.put("create_date", userBook.getCreateDate().getTime());
         if (userBook.getReadDate() != null) {
             book.put("read_date", userBook.getReadDate().getTime());

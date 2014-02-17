@@ -75,7 +75,50 @@ public class TestBookResource extends BaseJerseyTest {
         postParams.add("tags", tag3Id);
         postParams.add("page_count", 362);
         postParams.add("author", "C. Sagan");
+        postParams.add("isbn13", "9780345376596");
         response = bookResource.post(ClientResponse.class, postParams);
+        Assert.assertEquals(Status.OK, Status.fromStatusCode(response.getStatus()));
+        
+        // Create the same book manually (KO)
+        bookResource = resource().path("/book/manual");
+        bookResource.addFilter(new CookieAuthenticationFilter(book1Token));
+        postParams = new MultivaluedMapImpl();
+        postParams.add("title", "Fake title");
+        postParams.add("author", "Fake author");
+        postParams.add("publish_date", 42);
+        postParams.add("tags", tag3Id);
+        postParams.add("page_count", 300);
+        postParams.add("author", "C. Sagan");
+        postParams.add("isbn13", "9780345376596");
+        response = bookResource.put(ClientResponse.class, postParams);
+        Assert.assertEquals(Status.BAD_REQUEST, Status.fromStatusCode(response.getStatus()));
+        
+        // Create a new book manually without ISBN (KO)
+        bookResource = resource().path("/book/manual");
+        bookResource.addFilter(new CookieAuthenticationFilter(book1Token));
+        postParams = new MultivaluedMapImpl();
+        postParams.add("title", "Fake title");
+        postParams.add("author", "Fake author");
+        postParams.add("publish_date", 42);
+        postParams.add("tags", tag3Id);
+        postParams.add("page_count", 300);
+        postParams.add("author", "C. Sagan");
+        response = bookResource.put(ClientResponse.class, postParams);
+        Assert.assertEquals(Status.BAD_REQUEST, Status.fromStatusCode(response.getStatus()));
+        
+        // Create a new book manually
+        bookResource = resource().path("/book/manual");
+        bookResource.addFilter(new CookieAuthenticationFilter(book1Token));
+        postParams = new MultivaluedMapImpl();
+        postParams.add("title", "Fake title");
+        postParams.add("author", "Fake author");
+        postParams.add("publish_date", 42);
+        postParams.add("tags", tag3Id);
+        postParams.add("page_count", 300);
+        postParams.add("author", "C. Sagan");
+        postParams.add("title", "Fake book");
+        postParams.add("isbn13", "0123456789012");
+        response = bookResource.put(ClientResponse.class, postParams);
         Assert.assertEquals(Status.OK, Status.fromStatusCode(response.getStatus()));
         
         // Set a book as read
@@ -144,7 +187,7 @@ public class TestBookResource extends BaseJerseyTest {
         json = response.getEntity(JSONObject.class);
         Assert.assertEquals(Status.OK, Status.fromStatusCode(response.getStatus()));
         JSONArray books = json.getJSONArray("books");
-        Assert.assertTrue(books.length() == 1);
+        Assert.assertTrue(books.length() == 2);
         
         // Search the book
         bookResource = resource().path("/book/list");
@@ -173,7 +216,7 @@ public class TestBookResource extends BaseJerseyTest {
         json = response.getEntity(JSONObject.class);
         Assert.assertEquals(Status.OK, Status.fromStatusCode(response.getStatus()));
         books = json.getJSONArray("books");
-        Assert.assertTrue(books.length() == 0);
+        Assert.assertTrue(books.length() == 1);
     }
     
     /**

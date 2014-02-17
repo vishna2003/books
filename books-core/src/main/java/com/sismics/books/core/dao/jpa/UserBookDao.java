@@ -174,7 +174,10 @@ public class UserBookDao {
             userBookDto.setSubtitle((String) o[i++]);
             userBookDto.setAuthor((String) o[i++]);
             userBookDto.setLanguage((String) o[i++]);
-            userBookDto.setPublishTimestamp(((Timestamp) o[i++]).getTime());
+            Timestamp publishTimestamp = (Timestamp) o[i++];
+            if (publishTimestamp != null) {
+                userBookDto.setPublishTimestamp(publishTimestamp.getTime());
+            }
             userBookDto.setCreateTimestamp(((Timestamp) o[i++]).getTime());
             Timestamp readTimestamp = (Timestamp) o[i++];
             if (readTimestamp != null) {

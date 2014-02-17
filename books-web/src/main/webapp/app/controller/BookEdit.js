@@ -4,6 +4,8 @@
  * Book edit controller.
  */
 App.controller('BookEdit', function($scope, $state, $stateParams, Restangular) {
+  $scope.isEdit = true;
+
   /**
    * Save the modifications.
    */
@@ -26,5 +28,5 @@ App.controller('BookEdit', function($scope, $state, $stateParams, Restangular) {
     $scope.book = data;
     $scope.book.publish_date_year = new Date($scope.book.publish_date).getFullYear();
     $scope.book.tags = _.pluck($scope.book.tags, 'id');
-  })
+  });
 });

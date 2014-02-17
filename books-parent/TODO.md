@@ -2,8 +2,7 @@ TODO
 ====
 
 - Rescale cover to 192px width max if necessary (server)
-- Add a book manually (client/server)
-- Rating and memo (client/server)
+- Rating and memo (text + images) (client/server)
 - Links to Amazon, DuckDuckGo search, Google search
 
 - Api key: POST /app to modify it, warning if no key at all (client)
