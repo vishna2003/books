@@ -37,4 +37,29 @@ public class DialogUtil {
             }
         }).create().show();
     }
+
+    /**
+     * Create a dialog with an OK button.
+     *
+     * @param activity Context activity
+     * @param title Dialog title
+     * @param message Dialog message
+     */
+    public static void showOkDialog(Activity activity, int title, String message) {
+        if (activity == null || activity.isFinishing()) {
+            return;
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+
+        builder.setTitle(title)
+                .setMessage(message)
+                .setCancelable(true)
+                .setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                }).create().show();
+    }
 }

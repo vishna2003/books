@@ -1,14 +1,22 @@
 package com.sismics.books.fragment;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.sismics.books.R;
 import com.sismics.books.adapter.BooksAdapter;
 import com.sismics.books.resource.BookResource;
+import com.sismics.books.util.DialogUtil;
+import com.sismics.books.zxing.IntentIntegrator;
+import com.sismics.books.zxing.IntentResult;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -73,7 +81,12 @@ public class BookListFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
 
+        refreshBooks();
+    }
+
+    private void refreshBooks() {
         BookResource.list(getActivity(), new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(final JSONObject json) {
@@ -86,6 +99,49 @@ public class BookListFragment extends ListFragment {
                 setListAdapter(new BooksAdapter(getActivity(), books));
             }
         });
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.book_list, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.add_book:
+                IntentIntegrator integrator = new IntentIntegrator(getActivity()) {
+                    @Override
+                    protected void startActivityForResult(Intent intent, int code) {
+                        // Call startActivityForResult to get the onActivityResult here too
+                        BookListFragment.this.startActivityForResult(intent, code);
+                    }
+                };
+                integrator.initiateScan();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (scanResult != null) {
+            String barcode = scanResult.getContents();
+            BookResource.add(getActivity(), barcode, new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(JSONObject response) {
+                    refreshBooks();
+                    DialogUtil.showOkDialog(getActivity(), R.string.add_book_success_title, R.string.add_book_success);
+                }
+
+                @Override
+                public void onFailure(Throwable e, JSONObject errorResponse) {
+                    DialogUtil.showOkDialog(getActivity(), R.string.add_book_error_title, errorResponse.optString("message"));
+                }
+            });
+        }
     }
 
     @Override

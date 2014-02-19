@@ -3,6 +3,7 @@ package com.sismics.books.resource;
 import android.content.Context;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 
 /**
  * Access to /book API.
@@ -31,5 +32,19 @@ public class BookResource extends BaseResource {
         init(context);
 
         client.get(getApiUrl(context) + "/book/" + id, responseHandler);
+    }
+
+    /**
+     * Add a book by ISBN.
+     * @param context Context
+     * @param isbn ISBN
+     * @param responseHandler Response handler
+     */
+    public static void add(Context context, String isbn, JsonHttpResponseHandler responseHandler) {
+        init(context);
+
+        RequestParams params = new RequestParams();
+        params.put("isbn", isbn);
+        client.put(context, getApiUrl(context) + "/book", params, responseHandler);
     }
 }

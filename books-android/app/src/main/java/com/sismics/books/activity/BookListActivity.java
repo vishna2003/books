@@ -12,6 +12,7 @@ import com.sismics.books.fragment.BookListFragment;
 import com.sismics.books.R;
 import com.sismics.books.model.ApplicationContext;
 import com.sismics.books.resource.UserResource;
+import com.sismics.books.zxing.IntentIntegrator;
 
 
 /**
@@ -30,8 +31,7 @@ import com.sismics.books.resource.UserResource;
  * {@link com.sismics.books.fragment.BookListFragment.Callbacks} interface
  * to listen for item selections.
  */
-public class BookListActivity extends FragmentActivity
-        implements BookListFragment.Callbacks {
+public class BookListActivity extends FragmentActivity implements BookListFragment.Callbacks {
 
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet

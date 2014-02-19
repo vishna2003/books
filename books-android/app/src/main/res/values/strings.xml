@@ -21,6 +21,10 @@
     <string name="refresh">Refresh</string>
     <string name="logout">Sign Out</string>
     <string name="settings">Settings</string>
+    <string name="add_book">Add a book</string>
+    <string name="add_book_error_title">Error addding this book</string>
+    <string name="add_book_success_title">Book added</string>
+    <string name="add_book_success">Book successfully added</string>
     <string name="crash_toast_text">A crash occurred, a report has been sent to resolve this problem</string>
 
     <!-- Validation -->
