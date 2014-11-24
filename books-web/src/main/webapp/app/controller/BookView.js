@@ -53,7 +53,7 @@ App.controller('BookView', function($scope, $q, $timeout, $state, $stateParams, 
   })
 
   // Wait for everything to load
-  $q.all(bookPromise, tagsPromise).then(function() {
+  $q.all([bookPromise, tagsPromise]).then(function() {
     $timeout(function () {
       // Initialize active tags
       _.each($scope.tags, function(tag) {

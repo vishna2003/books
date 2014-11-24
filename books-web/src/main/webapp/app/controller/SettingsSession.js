@@ -8,7 +8,7 @@ App.controller('SettingsSession', function($scope, Restangular) {
    * Load sessions.
    */
   $scope.loadSession = function() {
-    Restangular.one('user').getList('session').then(function(data) {
+    Restangular.one('user/session').get().then(function(data) {
       $scope.sessions = data.sessions;
     });
   };

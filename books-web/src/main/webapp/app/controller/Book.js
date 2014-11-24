@@ -47,7 +47,7 @@ App.controller('Book', function($scope, $timeout, Restangular, $stateParams) {
     }
 
     $scope.loading = true;
-    Restangular.one('book').getList('list', {
+    Restangular.one('book/list').get({
       offset: $scope.offset,
       limit: $scope.limit,
       sort_column: $scope.sortColumn,

@@ -5,8 +5,8 @@
  */
 var App = angular.module('books',
     // Dependencies
-    ['ui.state', 'ui.route', 'restangular', 'ngSanitize',
-      'ngMobile', 'colorpicker.module', 'ui.keypress', 'ui.validate',]
+    ['ui.router', 'restangular', 'ngSanitize',
+      'colorpicker.module', 'ui.keypress', 'ui.validate',]
   )
 
 /**
