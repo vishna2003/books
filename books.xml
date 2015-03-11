@@ -4,7 +4,7 @@
 
   <Call class="java.lang.System" name="setProperty">
     <Arg>books.home</Arg>
-    <Arg>/var/books</Arg>
+    <Arg>/data</Arg>
   </Call>
 
 </Configure>
