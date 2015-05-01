@@ -59,6 +59,10 @@ public class BookDetailFragment extends Fragment {
         BookResource.info(getActivity(), bookId, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(JSONObject book) {
+                if (getActivity() == null) {
+                    return;
+                }
+
                 aq.id(R.id.author).text(book.optString("author"));
                 aq.id(R.id.title).text(book.optString("title") + " " + book.optString("subtitle", ""));
                 long publishDate = book.optLong("publish_date", 0);

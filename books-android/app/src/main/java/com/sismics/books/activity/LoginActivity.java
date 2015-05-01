@@ -3,6 +3,7 @@ package com.sismics.books.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
@@ -29,7 +30,7 @@ import org.json.JSONObject;
  * 
  * @author bgamard
  */
-public class LoginActivity extends FragmentActivity {
+public class LoginActivity extends AppCompatActivity {
 
     /**
      * User interface.

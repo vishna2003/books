@@ -2,12 +2,12 @@ package com.sismics.books.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
-import com.sismics.books.fragment.BookDetailFragment;
 import com.sismics.books.R;
+import com.sismics.books.fragment.BookDetailFragment;
 
 /**
  * An activity representing a single Book detail screen. This
@@ -18,7 +18,7 @@ import com.sismics.books.R;
  * This activity is mostly just a 'shell' activity containing nothing
  * more than a {@link com.sismics.books.fragment.BookDetailFragment}.
  */
-public class BookDetailActivity extends FragmentActivity {
+public class BookDetailActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +26,9 @@ public class BookDetailActivity extends FragmentActivity {
         setContentView(R.layout.activity_book_detail);
 
         // Show the Up button in the action bar.
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         // savedInstanceState is non-null when there is fragment state
         // saved from previous configurations of this activity

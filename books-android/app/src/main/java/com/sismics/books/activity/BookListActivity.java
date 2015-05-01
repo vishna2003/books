@@ -3,6 +3,7 @@ package com.sismics.books.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -31,7 +32,7 @@ import com.sismics.books.zxing.IntentIntegrator;
  * {@link com.sismics.books.fragment.BookListFragment.Callbacks} interface
  * to listen for item selections.
  */
-public class BookListActivity extends FragmentActivity implements BookListFragment.Callbacks {
+public class BookListActivity extends AppCompatActivity implements BookListFragment.Callbacks {
 
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
