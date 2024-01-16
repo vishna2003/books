@@ -69,6 +69,7 @@ public final class EMF {
                 InputStream is = hibernatePropertiesUrl.openStream();
                 Properties properties = new Properties();
                 properties.load(is);
+                properties.put("hibernate.hbm2ddl.auto", "none");
                 return properties;
             }
         } catch (IOException e) {
