@@ -52,6 +52,12 @@ From the `books-web` directory:
 
     mvn jetty:run
 
+#### Navigate to the following URL on your browser:
+
+  http://localhost:8080/books-web/#/login
+
+Use default credentials as admin(username) and admin(password).
+    
 #### Build a .war to deploy to your servlet container
 
 From the `books-web` directory:
