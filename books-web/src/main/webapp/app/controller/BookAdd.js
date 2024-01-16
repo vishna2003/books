@@ -36,8 +36,8 @@ App.controller('BookAdd', function($scope, $http, $state, $stateParams, Restangu
     // Send the file
     $http.put('api/book/import',
         formData, {
-          headers: { 'Content-Type': false },
-          transformRequest: function(data) { return data; }
+          transformRequest: angular.identity,
+          headers: { 'Content-Type': undefined }
         }).then(function() {
           alert('Import in progress, it may take a while.');
         });
