@@ -1,8 +1,5 @@
-Sismics Books - Project 1
+Sismics Books - Project 2
 =========================
-
-**Do not modify this README. Use the docs directory for anything you might want to submit**
-
 
 What is Books?
 ---------------
