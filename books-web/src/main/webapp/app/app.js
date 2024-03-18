@@ -162,8 +162,12 @@ var App = angular.module('books',
       })
       .state('common-library', {
         url: '/common-library',
-        templateUrl: 'partial/common-library-template.html',
-        controller: 'CommonLibrary'
+        views: {
+          'page': {
+            templateUrl: 'partial/common-library.html',
+            controller: 'CommonLibrary'
+          }
+        }
       });
   
   // Configuring Restangular
