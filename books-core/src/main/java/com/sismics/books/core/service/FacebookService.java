@@ -108,23 +108,22 @@ public class FacebookService extends AbstractScheduledService {
      * @return Long lived token
      * @throws AuthenticationException Invalid token
      */
+    
+
     public String getExtendedAccessToken(String accessToken) throws AuthenticationException {
         FacebookClient facebookClient = new DefaultFacebookClient(accessToken);
-        AccessToken extendedAccessToken = null;
         try {
-            extendedAccessToken = facebookClient.obtainExtendedAccessToken(facebookAppId, facebookAppSecret, accessToken);
-
+            AccessToken extendedAccessToken = facebookClient.obtainExtendedAccessToken(facebookAppId, facebookAppSecret, accessToken);
             if (log.isDebugEnabled()) {
                 log.debug(MessageFormat.format("Got long lived session token {0} for token {1}", extendedAccessToken, accessToken));
             }
+            return extendedAccessToken.getAccessToken();
         } catch (FacebookException e) {
             if (e.getMessage().contains("Error validating access token")) {
                 throw new AuthenticationException("Error validating access token");
-            }
-                
+            }            
             throw new RuntimeException("Error exchanging short lived token for long lived token", e);
         }
-        return extendedAccessToken.getAccessToken();
     }
     
     /**
@@ -133,38 +132,64 @@ public class FacebookService extends AbstractScheduledService {
      * @param accessToken Access token
      * @throws PermissionException Permission not found
      */
+//    public void validatePermission(String accessToken) throws PermissionException {
+//        FacebookClient facebookClient = new DefaultFacebookClient(accessToken);
+//        Connection<JsonObject> dataList = facebookClient.fetchConnection("me/permissions", JsonObject.class);
+//        boolean installed = false;
+//        boolean email = false;
+//        boolean publishStream = false;
+//        boolean readStream = false;
+//        for (JsonObject data : dataList.getData()) {
+//            if (data.optInt("installed") == 1) {
+//                installed = true;
+//            }
+//            if (data.optInt("email") == 1) {
+//                email = true;
+//            }
+//            if (data.optInt("publish_stream") == 1) {
+//                publishStream = true;
+//            }
+//            if (data.optInt("read_stream") == 1) {
+//                readStream = true;
+//            }
+//        }
+//        if (!installed) {
+//            throw new PermissionException("Permission not found: installed");
+//        }
+//        if (!email) {
+//            throw new PermissionException("Permission not found: email");
+//        }
+//        if (!publishStream) {
+//            throw new PermissionException("Permission not found: publish_stream");
+//        }
+//        if (!readStream) {
+//            throw new PermissionException("Permission not found: read_stream");
+//        }
+//    }
+
     public void validatePermission(String accessToken) throws PermissionException {
         FacebookClient facebookClient = new DefaultFacebookClient(accessToken);
         Connection<JsonObject> dataList = facebookClient.fetchConnection("me/permissions", JsonObject.class);
-        boolean installed = false;
-        boolean email = false;
-        boolean publishStream = false;
-        boolean readStream = false;
+
+        Map<String, String> requiredPermissions = new HashMap<>();
+        requiredPermissions.put("installed", "installed");
+        requiredPermissions.put("email", "email");
+        requiredPermissions.put("publish_stream", "publish_stream");
+        requiredPermissions.put("read_stream", "read_stream");
+
         for (JsonObject data : dataList.getData()) {
-            if (data.optInt("installed") == 1) {
-                installed = true;
-            }
-            if (data.optInt("email") == 1) {
-                email = true;
-            }
-            if (data.optInt("publish_stream") == 1) {
-                publishStream = true;
-            }
-            if (data.optInt("read_stream") == 1) {
-                readStream = true;
+            for (Map.Entry<String, String> entry : requiredPermissions.entrySet()) {
+                if (data.optInt(entry.getKey()) == 1) {
+                    requiredPermissions.remove(entry.getKey());
+                    break;
+                }
             }
         }
-        if (!installed) {
-            throw new PermissionException("Permission not found: installed");
-        }
-        if (!email) {
-            throw new PermissionException("Permission not found: email");
-        }
-        if (!publishStream) {
-            throw new PermissionException("Permission not found: publish_stream");
-        }
-        if (!readStream) {
-            throw new PermissionException("Permission not found: read_stream");
+
+        if (!requiredPermissions.isEmpty()) {
+            for (String permission : requiredPermissions.values()) {
+                throw new PermissionException("Permission not found: " + permission);
+            }
         }
     }
     
@@ -174,15 +199,17 @@ public class FacebookService extends AbstractScheduledService {
      * @param accessToken Access token
      * @param userId User ID
      */
+    
+
     public void synchronizeContact(String accessToken, String userId) {
         if (log.isDebugEnabled()) {
             log.debug(MessageFormat.format("Synchronizing Facebook contacts for user {0}", userId));
         }
         
         FacebookClient facebookClient = new DefaultFacebookClient(accessToken);
-        Connection<User> connection = null;
-        connection = facebookClient.fetchConnection("me/friends", User.class);
-        Map<String, String> newFriendMap = new HashMap<String, String>();
+        // Directly assign without using a null placeholder
+        Connection<User> connection = facebookClient.fetchConnection("me/friends", User.class);
+        Map<String, String> newFriendMap = new HashMap<>();
         for (List<User> friendList : connection) {
             for (User friend : friendList) {
                 String friendName = friend.getName();
@@ -244,7 +271,6 @@ public class FacebookService extends AbstractScheduledService {
     public void publishAction(final UserBook userBook) {
 //        FacebookClient facebookClient = new DefaultFacebookClient();
 
-        // TODO Publish a user book
 //        final String trackUrl = UrlUtil.getTrackUrl(track.getId());
 //        String activityId = track.getActivity().getId();
 //        String connection = "me/fitness.runs";

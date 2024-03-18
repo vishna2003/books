@@ -74,20 +74,23 @@ public class DirectoryUtil {
      * 
      * @return Theme directory.
      */
-    public static File getThemeDirectory() {
+    
+     public static File getThemeDirectory() {
         String webappRoot = EnvironmentUtil.getWebappRoot();
-        File themeDir = null;
+        File themeDir;
         if (webappRoot != null) {
             themeDir = new File(webappRoot + File.separator + "style" + File.separator + "theme");
         } else {
             themeDir = new File(DirectoryUtil.class.getResource("/style/theme").getFile());
         }
-        if (themeDir != null && themeDir.isDirectory()) {
+        if (themeDir.isDirectory()) {
             return themeDir;
         }
         return null;
     }
+    
 
+        
     /**
      * Returns a subdirectory of the base data directory
      * 

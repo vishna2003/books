@@ -19,6 +19,9 @@ import com.sismics.util.context.ThreadLocalContext;
  * @author jtremeaux
  */
 public class UserAppDao {
+
+    private static final String SELECT_USER_APP_BY_ID = "select ua from UserApp ua where ua.id = :id and ua.deleteDate is null";
+
     /**
      * Create a new connection.
      * 
@@ -47,7 +50,7 @@ public class UserAppDao {
         EntityManager em = ThreadLocalContext.get().getEntityManager();
             
         // Get the user app
-        Query q = em.createQuery("select ua from UserApp ua where ua.id = :id and ua.deleteDate is null");
+        Query q = em.createQuery(SELECT_USER_APP_BY_ID);
         q.setParameter("id", id);
         UserApp userAppFromDb = (UserApp) q.getSingleResult();
 
@@ -78,7 +81,7 @@ public class UserAppDao {
      */
     public UserApp getActiveById(String id) {
         EntityManager em = ThreadLocalContext.get().getEntityManager();
-        Query q = em.createQuery("select ua from UserApp ua where ua.id = :id and ua.deleteDate is null");
+        Query q = em.createQuery(SELECT_USER_APP_BY_ID);
         try {
             q.setParameter("id", id);
             return (UserApp) q.getSingleResult();
@@ -217,7 +220,7 @@ public class UserAppDao {
         EntityManager em = ThreadLocalContext.get().getEntityManager();
         
         // Récupère la connexion
-        Query q = em.createQuery("select ua from UserApp ua where ua.id = :id and ua.deleteDate is null");
+        Query q = em.createQuery(SELECT_USER_APP_BY_ID);
         q.setParameter("id", userApp.getId());
         UserApp userAppFromDb = (UserApp) q.getSingleResult();
 

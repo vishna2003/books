@@ -1,12 +1,15 @@
 package com.sismics.books.core.model.jpa;
 
-import com.google.common.base.Objects;
+// import java.util.Objects; // Added by us for code optimization
+import com.google.common.base.Objects; // Present originally
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
+import lombok.Data;
+
 
 /**
  * Link between a book and a tag.
@@ -15,6 +18,7 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "T_USER_BOOK_TAG")
+@Data
 public class UserBookTag implements Serializable {
     /**
      * Serial version UID.
@@ -41,60 +45,6 @@ public class UserBookTag implements Serializable {
     @Id
     @Column(name = "BOT_IDTAG_C", length = 36)
     private String tagId;
-
-    /**
-     * Getter of id.
-     *
-     * @return id
-     */
-    public String getId() {
-        return id;
-    }
-
-    /**
-     * Setter of id.
-     *
-     * @param id id
-     */
-    public void setId(String id) {
-        this.id = id;
-    }
-    
-    /**
-     * Getter de userBookId.
-     *
-     * @return the userBookId
-     */
-    public String getUserBookId() {
-        return userBookId;
-    }
-
-    /**
-     * Setter de userBookId.
-     *
-     * @param documentId userBookId
-     */
-    public void setUserBookId(String userBookId) {
-        this.userBookId = userBookId;
-    }
-
-    /**
-     * Getter de tagId.
-     *
-     * @return the tagId
-     */
-    public String getTagId() {
-        return tagId;
-    }
-
-    /**
-     * Setter de tagId.
-     *
-     * @param tagId tagId
-     */
-    public void setTagId(String tagId) {
-        this.tagId = tagId;
-    }
     
     @Override
     public int hashCode() {
@@ -105,34 +55,47 @@ public class UserBookTag implements Serializable {
         return result;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        UserBookTag other = (UserBookTag) obj;
-        if (userBookId == null) {
-            if (other.userBookId != null) {
-                return false;
-            }
-        } else if (!userBookId.equals(other.userBookId)) {
-            return false;
-        }
-        if (tagId == null) {
-            if (other.tagId != null) {
-                return false;
-            }
-        } else if (!tagId.equals(other.tagId)) {
-            return false;
-        }
-        return true;
-    }
+   @Override
+   public boolean equals(Object obj) {
+       if (this == obj) {
+           return true;
+       }
+       if (obj == null) {
+           return false;
+       }
+       if (getClass() != obj.getClass()) {
+           return false;
+       }
+       UserBookTag other = (UserBookTag) obj;
+       if (userBookId == null) {
+           if (other.userBookId != null) {
+               return false;
+           }
+       } else if (!userBookId.equals(other.userBookId)) {
+           return false;
+       }
+       if (tagId == null) {
+           if (other.tagId != null) {
+               return false;
+           }
+       } else if (!tagId.equals(other.tagId)) {
+           return false;
+       }
+       return true;
+   }
+
+    // @Override
+    // public boolean equals(Object obj) {
+    //     if (this == obj) {
+    //         return true;
+    //     }
+    //     if (obj == null || getClass() != obj.getClass()) {
+    //         return false;
+    //     }
+    //     UserBookTag other = (UserBookTag) obj;
+    //     return Objects.equals(userBookId, other.userBookId) &&
+    //             Objects.equals(tagId, other.tagId);
+    // }
 
     @Override
     public String toString() {

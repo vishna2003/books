@@ -159,6 +159,11 @@ var App = angular.module('books',
             controller: 'SettingsUserEdit'
           }
         }
+      })
+      .state('common-library', {
+        url: '/common-library',
+        templateUrl: 'partial/common-library-template.html',
+        controller: 'CommonLibrary'
       });
   
   // Configuring Restangular

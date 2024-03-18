@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import com.google.common.base.Objects;
+import lombok.Data;
 
 /**
  * Book entity.
@@ -16,6 +17,7 @@ import com.google.common.base.Objects;
  */
 @Entity
 @Table(name = "T_BOOK")
+@Data
 public class Book {
     /**
      * Book ID.
@@ -77,186 +79,6 @@ public class Book {
      */
     @Column(name = "BOK_PUBLISHDATE_D", nullable = false)
     private Date publishDate;
-    
-    /**
-     * Getter of id.
-     * 
-     * @return id
-     */
-    public String getId() {
-        return id;
-    }
-
-    /**
-     * Setter of id.
-     * 
-     * @param id id
-     */
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    /**
-     * Getter of title.
-     * 
-     * @return title
-     */
-    public String getTitle() {
-        return title;
-    }
-
-    /**
-     * Setter of title.
-     * 
-     * @param title title
-     */
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    /**
-     * Getter of subtitle.
-     * 
-     * @return subtitle
-     */
-    public String getSubtitle() {
-        return subtitle;
-    }
-
-    /**
-     * Setter of subtitle.
-     * 
-     * @param subtitle subtitle
-     */
-    public void setSubtitle(String subtitle) {
-        this.subtitle = subtitle;
-    }
-
-    /**
-     * Getter of author.
-     * 
-     * @return author
-     */
-    public String getAuthor() {
-        return author;
-    }
-
-    /**
-     * Setter of author.
-     * 
-     * @param author author
-     */
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
-    /**
-     * Getter of description.
-     * 
-     * @return description
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * Setter of description.
-     * 
-     * @param description description
-     */
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    /**
-     * Getter of isbn10.
-     * 
-     * @return isbn10
-     */
-    public String getIsbn10() {
-        return isbn10;
-    }
-
-    /**
-     * Setter of isbn10.
-     * 
-     * @param isbn10 isbn10
-     */
-    public void setIsbn10(String isbn10) {
-        this.isbn10 = isbn10;
-    }
-
-    /**
-     * Getter of isbn13.
-     * 
-     * @return isbn13
-     */
-    public String getIsbn13() {
-        return isbn13;
-    }
-
-    /**
-     * Setter of isbn13.
-     * 
-     * @param isbn13 isbn13
-     */
-    public void setIsbn13(String isbn13) {
-        this.isbn13 = isbn13;
-    }
-
-    /**
-     * Getter of pageCount.
-     * 
-     * @return pageCount
-     */
-    public Long getPageCount() {
-        return pageCount;
-    }
-
-    /**
-     * Setter of pageCount.
-     * 
-     * @param pageCount pageCount
-     */
-    public void setPageCount(Long pageCount) {
-        this.pageCount = pageCount;
-    }
-
-    /**
-     * Getter of language.
-     * 
-     * @return language
-     */
-    public String getLanguage() {
-        return language;
-    }
-
-    /**
-     * Setter of language.
-     * 
-     * @param language language
-     */
-    public void setLanguage(String language) {
-        this.language = language;
-    }
-
-    /**
-     * Getter of publishDate.
-     * 
-     * @return publishDate
-     */
-    public Date getPublishDate() {
-        return publishDate;
-    }
-
-    /**
-     * Setter of publishDate.
-     * 
-     * @param publishedDate publishDate
-     */
-    public void setPublishDate(Date publishDate) {
-        this.publishDate = publishDate;
-    }
 
     @Override
     public String toString() {

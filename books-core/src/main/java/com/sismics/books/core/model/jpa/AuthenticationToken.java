@@ -1,6 +1,7 @@
 package com.sismics.books.core.model.jpa;
 
 import com.google.common.base.Objects;
+import lombok.Data;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,6 +16,7 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "T_AUTHENTICATION_TOKEN")
+@Data
 public class AuthenticationToken {
     /**
      * Token.
@@ -46,96 +48,6 @@ public class AuthenticationToken {
      */
     @Column(name = "AUT_LASTCONNECTIONDATE_D")
     private Date lastConnectionDate;
-
-    /**
-     * Getter of id.
-     *
-     * @return id
-     */
-    public String getId() {
-        return id;
-    }
-
-    /**
-     * Setter of id.
-     *
-     * @param id id
-     */
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    /**
-     * Getter of userId.
-     *
-     * @return userId
-     */
-    public String getUserId() {
-        return userId;
-    }
-
-    /**
-     * Setter of userId.
-     *
-     * @param userId userId
-     */
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    /**
-     * Getter of longLasted.
-     *
-     * @return longLasted
-     */
-    public boolean isLongLasted() {
-        return longLasted;
-    }
-
-    /**
-     * Setter of longLasted.
-     *
-     * @param longLasted longLasted
-     */
-    public void setLongLasted(boolean longLasted) {
-        this.longLasted = longLasted;
-    }
-
-    /**
-     * Getter of creationDate.
-     *
-     * @return creationDate
-     */
-    public Date getCreationDate() {
-        return creationDate;
-    }
-
-    /**
-     * Setter of creationDate.
-     *
-     * @param creationDate creationDate
-     */
-    public void setCreationDate(Date creationDate) {
-        this.creationDate = creationDate;
-    }
-
-    /**
-     * Getter of lastConnectionDate.
-     *
-     * @return lastConnectionDate
-     */
-    public Date getLastConnectionDate() {
-        return lastConnectionDate;
-    }
-
-    /**
-     * Setter of lastConnectionDate.
-     *
-     * @param lastConnectionDate lastConnectionDate
-     */
-    public void setLastConnectionDate(Date lastConnectionDate) {
-        this.lastConnectionDate = lastConnectionDate;
-    }
 
     @Override
     public String toString() {

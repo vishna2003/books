@@ -124,6 +124,11 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <version>1.18.30</version>
+      </dependency>
+      <dependency>
         <groupId>com.sismics.books</groupId>
         <artifactId>books-core</artifactId>
         <version>${project.version}</version>
@@ -321,8 +326,13 @@
         <artifactId>restfb</artifactId>
         <version>${com.restfb.restfb.version}</version>
       </dependency>
+
+      
 	  
     </dependencies>
+
+    
+
   </dependencyManagement>
   
   <pluginRepositories>

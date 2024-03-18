@@ -2,6 +2,7 @@ package com.sismics.books.core.model.jpa;
 
 import com.google.common.base.Objects;
 import com.sismics.books.core.constant.ConfigType;
+import lombok.Data;
 
 import javax.persistence.*;
 
@@ -12,6 +13,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "T_CONFIG")
+@Data
 public class Config {
     /**
      * Configuration parameter ID.
@@ -27,42 +29,6 @@ public class Config {
     @Column(name = "CFG_VALUE_C", length = 250)
     private String value;
 
-    /**
-     * Getter of id.
-     *
-     * @return id
-     */
-    public ConfigType getId() {
-        return id;
-    }
-
-    /**
-     * Setter of id.
-     *
-     * @param id id
-     */
-    public void setId(ConfigType id) {
-        this.id = id;
-    }
-
-    /**
-     * Getter of value.
-     *
-     * @return value
-     */
-    public String getValue() {
-        return value;
-    }
-
-    /**
-     * Setter of value.
-     *
-     * @param value value
-     */
-    public void setValue(String value) {
-        this.value = value;
-    }
-    
     @Override
     public String toString() {
         return Objects.toStringHelper(this)

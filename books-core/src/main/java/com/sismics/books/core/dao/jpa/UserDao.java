@@ -23,6 +23,9 @@ import java.util.*;
  * @author jtremeaux
  */
 public class UserDao {
+
+    private static final String SELECT_USER_BY_USERNAME = "select u from User u where u.username = :username and u.deleteDate is null";
+
     /**
      * Authenticates an user.
      * 
@@ -32,7 +35,7 @@ public class UserDao {
      */
     public String authenticate(String username, String password) {
         EntityManager em = ThreadLocalContext.get().getEntityManager();
-        Query q = em.createQuery("select u from User u where u.username = :username and u.deleteDate is null");
+        Query q = em.createQuery(SELECT_USER_BY_USERNAME);
         q.setParameter("username", username);
         try {
             User user = (User) q.getSingleResult();
@@ -58,7 +61,7 @@ public class UserDao {
         
         // Checks for user unicity
         EntityManager em = ThreadLocalContext.get().getEntityManager();
-        Query q = em.createQuery("select u from User u where u.username = :username and u.deleteDate is null");
+        Query q = em.createQuery(SELECT_USER_BY_USERNAME);
         q.setParameter("username", user.getUsername());
         List<?> l = q.getResultList();
         if (l.size() > 0) {
@@ -140,7 +143,7 @@ public class UserDao {
     public User getActiveByUsername(String username) {
         EntityManager em = ThreadLocalContext.get().getEntityManager();
         try {
-            Query q = em.createQuery("select u from User u where u.username = :username and u.deleteDate is null");
+            Query q = em.createQuery(SELECT_USER_BY_USERNAME);
             q.setParameter("username", username);
             return (User) q.getSingleResult();
         } catch (NoResultException e) {
@@ -174,7 +177,7 @@ public class UserDao {
         EntityManager em = ThreadLocalContext.get().getEntityManager();
             
         // Get the user
-        Query q = em.createQuery("select u from User u where u.username = :username and u.deleteDate is null");
+        Query q = em.createQuery(SELECT_USER_BY_USERNAME);
         q.setParameter("username", username);
         User userFromDb = (User) q.getSingleResult();
         
@@ -204,7 +207,9 @@ public class UserDao {
      * @param paginatedList List of users (updated by side effects)
      * @param sortCriteria Sort criteria
      */
-    public void findAll(PaginatedList<UserDto> paginatedList, SortCriteria sortCriteria) {
+    
+
+     public void findAll(PaginatedList<UserDto> paginatedList, SortCriteria sortCriteria) {
         Map<String, Object> parameterMap = new HashMap<String, Object>();
         StringBuilder sb = new StringBuilder("select u.USE_ID_C as c0, u.USE_USERNAME_C as c1, u.USE_EMAIL_C as c2, u.USE_CREATEDATE_D as c3, u.USE_IDLOCALE_C as c4");
         sb.append(" from T_USER u ");

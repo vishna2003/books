@@ -2,13 +2,15 @@ package com.sismics.books.core.model.jpa;
 
 import java.io.Serializable;
 import java.util.Date;
+// import java.util.Objects; // Added by us for code optimization
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.google.common.base.Objects;
+import com.google.common.base.Objects; // Present originally
+import lombok.Data;
 
 /**
  * User book entity.
@@ -17,6 +19,7 @@ import com.google.common.base.Objects;
  */
 @Entity
 @Table(name = "T_USER_BOOK")
+@Data
 public class UserBook implements Serializable {
     /**
      * Serial version UID.
@@ -62,114 +65,7 @@ public class UserBook implements Serializable {
     @Column(name = "UBK_READDATE_D")
     private Date readDate;
     
-    /**
-     * Getter of id.
-     * 
-     * @return id
-     */
-    public String getId() {
-        return id;
-    }
 
-    /**
-     * Setter of id.
-     * 
-     * @param id id
-     */
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    /**
-     * Getter of bookId.
-     * 
-     * @return bookId
-     */
-    public String getBookId() {
-        return bookId;
-    }
-
-    /**
-     * Setter of bookId.
-     * 
-     * @param bookId bookId
-     */
-    public void setBookId(String bookId) {
-        this.bookId = bookId;
-    }
-
-    /**
-     * Getter of userId.
-     * 
-     * @return userId
-     */
-    public String getUserId() {
-        return userId;
-    }
-
-    /**
-     * Setter of userId.
-     * 
-     * @param userId userId
-     */
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    /**
-     * Getter of createDate.
-     * 
-     * @return createDate
-     */
-    public Date getCreateDate() {
-        return createDate;
-    }
-
-    /**
-     * Setter of createDate.
-     * 
-     * @param createDate createDate
-     */
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
-    }
-
-    /**
-     * Getter of deleteDate.
-     * 
-     * @return deleteDate
-     */
-    public Date getDeleteDate() {
-        return deleteDate;
-    }
-
-    /**
-     * Setter of deleteDate.
-     * 
-     * @param deleteDate deleteDate
-     */
-    public void setDeleteDate(Date deleteDate) {
-        this.deleteDate = deleteDate;
-    }
-
-    /**
-     * Getter of readDate.
-     * 
-     * @return readDate
-     */
-    public Date getReadDate() {
-        return readDate;
-    }
-
-    /**
-     * Setter of readDate.
-     * 
-     * @param readDate readDate
-     */
-    public void setReadDate(Date readDate) {
-        this.readDate = readDate;
-    }
-    
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -179,34 +75,47 @@ public class UserBook implements Serializable {
         return result;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        UserBook other = (UserBook) obj;
-        if (bookId == null) {
-            if (other.bookId != null) {
-                return false;
-            }
-        } else if (!bookId.equals(other.bookId)) {
-            return false;
-        }
-        if (userId == null) {
-            if (other.userId != null) {
-                return false;
-            }
-        } else if (!userId.equals(other.userId)) {
-            return false;
-        }
-        return true;
-    }
+   @Override
+   public boolean equals(Object obj) {
+       if (this == obj) {
+           return true;
+       }
+       if (obj == null) {
+           return false;
+       }
+       if (getClass() != obj.getClass()) {
+           return false;
+       }
+       UserBook other = (UserBook) obj;
+       if (bookId == null) {
+           if (other.bookId != null) {
+               return false;
+           }
+       } else if (!bookId.equals(other.bookId)) {
+           return false;
+       }
+       if (userId == null) {
+           if (other.userId != null) {
+               return false;
+           }
+       } else if (!userId.equals(other.userId)) {
+           return false;
+       }
+       return true;
+   }
+
+    // @Override
+    // public boolean equals(Object obj) {
+    //     if (this == obj) {
+    //         return true;
+    //     }
+    //     if (obj == null || getClass() != obj.getClass()) {
+    //         return false;
+    //     }
+    //     UserBook other = (UserBook) obj;
+    //     return Objects.equals(bookId, other.bookId) &&
+    //             Objects.equals(userId, other.userId);
+    // }
 
     @Override
     public String toString() {

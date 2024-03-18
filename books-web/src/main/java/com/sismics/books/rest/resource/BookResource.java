@@ -506,6 +506,7 @@ public class BookResource extends BaseResource {
         // Download the new cover
         try {
             AppContext.getInstance().getBookDataService().downloadThumbnail(book, imageUrl);
+
         } catch (Exception e) {
             throw new ClientException("DownloadCoverError", "Error downloading the cover image");
         }

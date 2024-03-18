@@ -4,8 +4,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
 import com.google.common.base.Objects;
+import lombok.Data;
 
 /**
  * Connected application entity.
@@ -14,6 +14,7 @@ import com.google.common.base.Objects;
  */
 @Entity
 @Table(name = "T_APP")
+@Data
 public class App {
     /**
      * Connected application ID.
@@ -22,24 +23,6 @@ public class App {
     @Column(name = "APP_ID_C", length = 20)
     private String id;
 
-    /**
-     * Getter of id.
-     *
-     * @return id
-     */
-    public String getId() {
-        return id;
-    }
-
-    /**
-     * Setter of id.
-     *
-     * @param id id
-     */
-    public void setId(String id) {
-        this.id = id;
-    }
-    
     @Override
     public String toString() {
         return Objects.toStringHelper(this)
