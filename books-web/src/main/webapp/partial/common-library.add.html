@@ -1,0 +1,26 @@
+<div class="container">
+    <h2>Add New Book</h2>
+    <form ng-controller="CommonLibrary as ctrl">
+        <div class="form-group">
+            <label for="title">Title:</label>
+            <input type="text" class="form-control" id="title" ng-model="ctrl.newBook.title">
+        </div>
+        <div class="form-group">
+            <label for="author">Author(s):</label>
+            <input type="text" class="form-control" id="author" ng-model="ctrl.newBook.authors">
+        </div>
+        <div class="form-group">
+            <label for="genres">Genre(s):</label>
+            <input type="text" class="form-control" id="genres" ng-model="ctrl.newBook.genres">
+        </div>
+        <div class="form-group">
+            <label for="rating">Rating:</label>
+            <input type="number" class="form-control" id="rating" ng-model="ctrl.newBook.rating">
+        </div>
+        <div class="form-group">
+            <label for="thumbnailUrl">Thumbnail image URL (Optional):</label>
+            <input type="text" class="form-control" id="thumbnailUrl" ng-model="ctrl.newBook.thumbnailUrl">
+        </div>
+        <button type="submit" class="btn btn-default" ng-click="ctrl.addBook()">Submit</button>
+    </form>
+</div>

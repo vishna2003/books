@@ -6,7 +6,7 @@ import java.util.List;
  * Data Transfer Object for CommonLibraryBook.
  */
 public class CommonLibraryBookDto {
-    private String id;
+    private Integer id;
     private String title;
     private List<String> authors;
     private List<String> genres;
@@ -18,11 +18,11 @@ public class CommonLibraryBookDto {
     public CommonLibraryBookDto() {
     }
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

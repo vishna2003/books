@@ -3,13 +3,10 @@ package com.sismics.books.core.service;
 import com.sismics.books.core.dao.jpa.CommonLibraryBookDao;
 import com.sismics.books.core.dao.jpa.dto.CommonLibraryBookDto;
 import com.sismics.books.core.model.jpa.CommonLibraryBook;
-import com.sismics.util.context.ThreadLocalContext;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import javax.persistence.EntityManager;
 
 public class CommonLibraryBookService {
 
@@ -21,14 +18,16 @@ public class CommonLibraryBookService {
      * @param bookDto Data transfer object containing book details
      * @return ID of the newly added book
      */
-    public String addBook(CommonLibraryBookDto bookDto) {
+    public Integer addBook(CommonLibraryBookDto bookDto) {
         CommonLibraryBook book = new CommonLibraryBook();
         book.setTitle(bookDto.getTitle());
         book.setAuthors(bookDto.getAuthors());
         book.setGenres(bookDto.getGenres());
         book.setRating(bookDto.getRating());
         book.setThumbnailUrl(bookDto.getThumbnailUrl());
-        return commonLibraryBookDao.create(book);
+        commonLibraryBookDao.create(book);
+        // Return the id of the newly created book
+        return book.getId();
     }
 
     /**
@@ -37,7 +36,7 @@ public class CommonLibraryBookService {
      * @param bookId ID of the book
      * @param rating New rating to be set
      */
-    public void rateBook(String bookId, Double rating) {
+    public void rateBook(Integer bookId, Double rating) {
         if (rating < 1 || rating > 10) {
             throw new IllegalArgumentException("Rating must be between 1 and 10.");
         }
@@ -70,4 +69,14 @@ public class CommonLibraryBookService {
         return dto;
     }
 
+    public static void main(String[] args) {
+        CommonLibraryBookService cbls = new CommonLibraryBookService(); 
+        CommonLibraryBookDto bookDto = new CommonLibraryBookDto();
+        bookDto.setTitle("The Great Gatsby");
+
+        System.out.println(bookDto.getId());
+        System.out.println(bookDto.getTitle());
+        Integer response = cbls.addBook(bookDto);
+        System.out.println(response); 
+    }
 }

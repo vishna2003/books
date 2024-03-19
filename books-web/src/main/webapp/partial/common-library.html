@@ -1,23 +1,5 @@
 <div class="container">
-    <h2>Common Library</h2>
-    <!-- Filters -->
-    <div ng-controller="CommonLibrary as ctrl">
-      <input type="text" ng-model="ctrl.filters.title" placeholder="Search by title...">
-      <!-- Add other filters here -->
-      <button ng-click="ctrl.applyFilters()">Apply Filters</button>
-    </div>
-    <!-- Book list -->
-    <div class="row">
-      <div class="col-md-4" ng-repeat="book in ctrl.filteredBooks">
-        <div class="thumbnail">
-          <img ng-src="{{book.thumbnailUrl}}" alt="Book cover">
-          <div class="caption">
-            <h3>{{book.title}}</h3>
-            <p>{{book.author}}</p>
-            <p>Rating: {{book.rating}}</p>
-            <!-- Add more book details here -->
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <h2>Common Library</h2>
+  <button ng-click="ctrl.goToAddBookPage()" class="btn btn-primary">Add Book</button>
+</div>
+

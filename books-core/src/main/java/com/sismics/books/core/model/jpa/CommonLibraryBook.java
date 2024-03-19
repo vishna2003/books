@@ -17,7 +17,7 @@ public class CommonLibraryBook {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    private Integer id;
 
     @Column(name = "title", nullable = false)
     private String title;
@@ -32,6 +32,8 @@ public class CommonLibraryBook {
     @Column(name = "genre")
     private List<String> genres;
 
+    @ElementCollection
+    @CollectionTable(name = "common_library_book_ratings", joinColumns = @JoinColumn(name = "book_id"))
     @Column(name = "rating", nullable = false)
     private Double rating;
 
@@ -43,11 +45,11 @@ public class CommonLibraryBook {
     }
 
     // Getters and Setters
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
