@@ -207,8 +207,6 @@ public class UserDao {
      * @param paginatedList List of users (updated by side effects)
      * @param sortCriteria Sort criteria
      */
-    
-
      public void findAll(PaginatedList<UserDto> paginatedList, SortCriteria sortCriteria) {
         Map<String, Object> parameterMap = new HashMap<String, Object>();
         StringBuilder sb = new StringBuilder("select u.USE_ID_C as c0, u.USE_USERNAME_C as c1, u.USE_EMAIL_C as c2, u.USE_CREATEDATE_D as c3, u.USE_IDLOCALE_C as c4");

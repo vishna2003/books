@@ -160,6 +160,14 @@ var App = angular.module('books',
           }
         }
       })
+      .state('add-book', {
+        url: '/add-book',
+        views: {
+          'page': {
+            templateUrl: 'partial/common-library.add.html',
+          }
+        }
+      })
       .state('common-library', {
         url: '/common-library',
         views: {
@@ -169,6 +177,7 @@ var App = angular.module('books',
           }
         }
       });
+      
   
   // Configuring Restangular
   RestangularProvider.setBaseUrl('api');

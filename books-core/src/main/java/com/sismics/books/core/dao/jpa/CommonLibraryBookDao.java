@@ -22,9 +22,10 @@ public class CommonLibraryBookDao {
      * @param book CommonLibraryBook
      * @return New ID
      */
-    public void create(CommonLibraryBook book) {
+    public String create(CommonLibraryBook book) {
         EntityManager em = ThreadLocalContext.get().getEntityManager();
         em.persist(book);
+        return book.getId();
     }
     
     /**
@@ -33,7 +34,7 @@ public class CommonLibraryBookDao {
      * @param id CommonLibraryBook ID
      * @return CommonLibraryBook
      */
-    public CommonLibraryBook getById(Integer id) {
+    public CommonLibraryBook getById(String id) {
         EntityManager em = ThreadLocalContext.get().getEntityManager();
         try {
             return em.find(CommonLibraryBook.class, id);
@@ -50,7 +51,7 @@ public class CommonLibraryBookDao {
      */
     public List<CommonLibraryBook> findByTitle(String title) {
         EntityManager em = ThreadLocalContext.get().getEntityManager();
-        Query q = em.createQuery("SELECT b FROM common_library_book b WHERE b.title LIKE :title", CommonLibraryBook.class);
+        Query q = em.createQuery("SELECT b FROM CommonLibraryBook b WHERE b.title LIKE :title", CommonLibraryBook.class);
         q.setParameter("title", "%" + title + "%");
         try {
             return q.getResultList();
@@ -65,7 +66,7 @@ public class CommonLibraryBookDao {
      * @param id ID of the CommonLibraryBook
      * @param rating New rating to be set
      */
-    public void updateRating(Integer id, Double rating) {
+    public void updateRating(String id, Double rating) {
         EntityManager em = ThreadLocalContext.get().getEntityManager();
         CommonLibraryBook book = em.find(CommonLibraryBook.class, id);
         if (book != null) {
@@ -81,7 +82,7 @@ public class CommonLibraryBookDao {
      */
     public List<CommonLibraryBook> findAll() {
         EntityManager em = ThreadLocalContext.get().getEntityManager();
-        Query q = em.createQuery("SELECT b FROM common_library_book b", CommonLibraryBook.class);
+        Query q = em.createQuery("SELECT b FROM CommonLibraryBook b", CommonLibraryBook.class);
         try {
             return q.getResultList();
         } catch (NoResultException e) {
@@ -91,7 +92,7 @@ public class CommonLibraryBookDao {
 
     public List<CommonLibraryBookDto> findTopByAverageRating(int limit) {
         EntityManager em = ThreadLocalContext.get().getEntityManager();
-        Query q = em.createQuery("SELECT b FROM common_library_book b ORDER BY b.rating DESC", CommonLibraryBook.class);
+        Query q = em.createQuery("SELECT b FROM CommonLibraryBook b ORDER BY b.rating DESC", CommonLibraryBook.class);
         q.setMaxResults(limit);
         List<CommonLibraryBook> books = q.getResultList();
         List<CommonLibraryBookDto> dtos = new ArrayList<>();
@@ -103,7 +104,7 @@ public class CommonLibraryBookDao {
     
     public List<CommonLibraryBookDto> findTopByNumberOfRatings(int limit) {
         EntityManager em = ThreadLocalContext.get().getEntityManager();
-        Query q = em.createQuery("SELECT b FROM common_library_book b ORDER BY b.numberOfRatings DESC", CommonLibraryBook.class);
+        Query q = em.createQuery("SELECT b FROM CommonLibraryBook b ORDER BY b.numberOfRatings DESC", CommonLibraryBook.class);
         q.setMaxResults(limit);
         List<CommonLibraryBook> books = q.getResultList();
         List<CommonLibraryBookDto> dtos = new ArrayList<>();

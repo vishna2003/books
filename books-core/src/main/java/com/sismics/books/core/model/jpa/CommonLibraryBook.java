@@ -12,32 +12,26 @@ import javax.persistence.Table;
 import java.util.List;
 
 @Entity
-@Table(name = "common_library_book")
+@Table(name = "T_COMMON_LIBRARY_BOOK")
 public class CommonLibraryBook {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private String id;
 
-    @Column(name = "title", nullable = false)
+    @Column(name = "clb_title_c")
     private String title;
 
-    @ElementCollection
-    @CollectionTable(name = "common_library_book_authors", joinColumns = @JoinColumn(name = "book_id"))
-    @Column(name = "author")
-    private List<String> authors;
+    @Column(name = "clb_authors_c")
+    private String authors; // Comma-separated list
 
-    @ElementCollection
-    @CollectionTable(name = "common_library_book_genres", joinColumns = @JoinColumn(name = "book_id"))
-    @Column(name = "genre")
-    private List<String> genres;
+    @Column(name = "clb_genres_c")
+    private String genres; // Comma-separated list
 
-    @ElementCollection
-    @CollectionTable(name = "common_library_book_ratings", joinColumns = @JoinColumn(name = "book_id"))
-    @Column(name = "rating", nullable = false)
+    @Column(name = "clb_rating_n")
     private Double rating;
 
-    @Column(name = "thumbnail_url")
+    @Column(name = "clb_thumbnail_url_c")
     private String thumbnailUrl;
 
     // Constructors
@@ -45,11 +39,11 @@ public class CommonLibraryBook {
     }
 
     // Getters and Setters
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 

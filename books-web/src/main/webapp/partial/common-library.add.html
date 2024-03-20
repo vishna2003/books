@@ -1,26 +1,63 @@
 <div class="container">
     <h2>Add New Book</h2>
-    <form ng-controller="CommonLibrary as ctrl">
+    <form id="bookForm">
         <div class="form-group">
             <label for="title">Title:</label>
-            <input type="text" class="form-control" id="title" ng-model="ctrl.newBook.title">
+            <input type="text" class="form-control" id="title" required>
         </div>
         <div class="form-group">
             <label for="author">Author(s):</label>
-            <input type="text" class="form-control" id="author" ng-model="ctrl.newBook.authors">
+            <input type="text" class="form-control" id="authors" required>
+            <small class="form-text text-muted">Enter multiple authors separated by commas (e.g., abc, xyz)</small>
         </div>
         <div class="form-group">
             <label for="genres">Genre(s):</label>
-            <input type="text" class="form-control" id="genres" ng-model="ctrl.newBook.genres">
+            <input type="text" class="form-control" id="genres" required>
+            <small class="form-text text-muted">Enter multiple genres separated by commas (e.g., Fiction, Mystery)</small>
         </div>
         <div class="form-group">
             <label for="rating">Rating:</label>
-            <input type="number" class="form-control" id="rating" ng-model="ctrl.newBook.rating">
+            <input type="number" class="form-control" id="rating" min="1" max="10" required>
+            <small class="form-text text-muted">Enter a numerical value between 1 and 10.</small>
         </div>
         <div class="form-group">
-            <label for="thumbnailUrl">Thumbnail image URL (Optional):</label>
-            <input type="text" class="form-control" id="thumbnailUrl" ng-model="ctrl.newBook.thumbnailUrl">
+            <label for="thumbnailUrl">Thumbnail image URL:</label>
+            <input type="text" class="form-control" id="thumbnailUrl">
+            <small class="form-text text-muted">Optional field for the thumbnail image URL.</small>
         </div>
-        <button type="submit" class="btn btn-default" ng-click="ctrl.addBook()">Submit</button>
+        <button type="submit" class="btn btn-default">Submit</button>
     </form>
 </div>
+
+<script>
+    // Define arrays to hold form data and page content
+    var formData = [];
+    var pageContent = [];
+
+    // Function to handle form submission
+    function handleSubmit(event) {
+        event.preventDefault(); // Prevent form submission
+        // Get form data
+        var title = document.getElementById('title').value;
+        var authors = document.getElementById('authors').value.split(',').map(author => author.trim());
+        var genres = document.getElementById('genres').value.split(',').map(genre => genre.trim());
+        var rating = document.getElementById('rating').value;
+        var thumbnailUrl = document.getElementById('thumbnailUrl').value;
+        // Add form data to formData array
+        formData.push({ title: title, authors: authors, genres: genres, rating: rating, thumbnailUrl: thumbnailUrl });
+        // Add page content to pageContent array
+        pageContent.push(document.getElementById('bookForm').innerHTML);
+        // Reset form fields
+        document.getElementById('title').value = '';
+        document.getElementById('authors').value = '';
+        document.getElementById('genres').value = '';
+        document.getElementById('rating').value = '';
+        document.getElementById('thumbnailUrl').value = '';
+        // Log form data and page content (for demonstration purposes)
+        console.log('Form Data:', formData);
+        console.log('Page Content:', pageContent);
+    }
+
+    // Add event listener to form submission
+    document.getElementById('bookForm').addEventListener('submit', handleSubmit);
+</script>

@@ -17,8 +17,8 @@ App.controller('CommonLibrary', function($scope, $location, BookService) {
 
     // Function to redirect to the add book page
     ctrl.goToAddBookPage = function() {
-        $location.path('/partial/common-library.add.html');
-    };
+      $location.path('/add-book');
+  };
 
     // Placeholder function for adding a book
     ctrl.addBook = function() {
