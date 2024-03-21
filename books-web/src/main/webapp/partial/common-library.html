@@ -2,3 +2,291 @@
   <h2>Common Library</h2>
   <a href="#/add-book" class="btn btn-primary">Add Book</a>
 </div>
+
+<div class="container">
+  <!-- Radio button options for sorting -->
+  <div class="row">
+    <div class="col-md-12">
+      <label><input type="radio" name="sortOption" id="averageRating" value="averageRating"> Average Rating</label>
+      <label><input type="radio" name="sortOption" id="numberOfRatings" value="numberOfRatings"> Number of Ratings</label>
+      <button class="btn btn-success" onclick="buildTop10List()">Build Top 10 List</button>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <h3>Top 10 Books</h3>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Author(s)</th>
+            <th id="sortOptionHeader">Average Rating</th>
+          </tr>
+        </thead>
+        <tbody id="top10BooksBody">
+          <!-- Top 10 books will be populated dynamically here -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- <div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <h3>Top 10 Books</h3>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Author(s)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="book in top10Books">
+            <td>{{ book.title }}</td>
+            <td>{{ book.author }}</td>
+            <td>{{ sortOption === 'averageRating' ? book.averageRating : book.numberOfRatings }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div> -->
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <h3>Common Library Books List</h3>
+      <div>
+        <label for="authorFilter">Author(s):</label>
+        <select id="authorFilter" multiple>
+          <!-- Options for author filter will be dynamically populated -->
+        </select>
+        <label for="genreFilter">Genre(s):</label>
+        <select id="genreFilter" multiple>
+          <!-- Options for genre filter will be dynamically populated -->
+        </select>
+        <label for="ratingFilter">Ratings:</label>
+        <select id="ratingFilter">
+          <option value="">All</option>
+          <option value="6">Rating > 6</option>
+          <option value="7">Rating > 7</option>
+          <option value="8">Rating > 8</option>
+          <option value="9">Rating > 9</option>
+        </select>
+        <button onclick="applyFilters()">Apply Filters</button>
+        <button onclick="resetFilters()">Reset Filters</button>
+      </div>
+      <div id="bookList">
+        <!-- Additional books will be populated dynamically here -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal for rating input -->
+<div id="ratingModal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <h4>Rate Book</h4>
+    <input type="number" id="ratingInput" min="1" max="10">
+    <button onclick="submitRating()">Submit</button>
+  </div>
+</div>
+
+<script>
+  // Sample formData containing book data
+  var formData = [
+      {
+          title: "title1",
+          authors: ["sege", "rerf"],
+          genres: ["fewfe", "fee"],
+          rating: "5"
+      },
+      {
+          title: "title2",
+          authors: ["raR", "r"],
+          genres: ["e"],
+          rating: "3"
+      }
+  ];
+
+  function buildTop10List() {
+    console.log("Called")
+    var sortOption = document.querySelector('input[name="sortOption"]:checked').value;
+    console.log(sortOption)
+    var top10BooksBody = document.getElementById("top10BooksBody");
+    console.log(top10BooksBody)
+    var sortOptionHeader = document.getElementById("sortOptionHeader");
+    console.log(sortOptionHeader)
+
+    // Clear previous content
+    top10BooksBody.innerHTML = "";
+
+    // Sort formData based on selected sorting option
+    formData.sort(function(a, b) {
+      return sortOption === "averageRating" ? b.rating - a.rating : b.numberOfRatings - a.numberOfRatings;
+    });
+
+    // Display top 10 books
+    for (var i = 0; i < Math.min(formData.length, 10); i++) {
+      var book = formData[i];
+      var row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${book.title}</td>
+        <td>${book.authors.join(", ")}</td>
+        <td>${sortOption === "averageRating" ? book.rating : book.numberOfRatings}</td>
+      `;
+      top10BooksBody.appendChild(row);
+    }
+
+    // Update sort option header
+    sortOptionHeader.textContent = sortOption === "averageRating" ? "Average Rating" : "Number of Ratings";
+  }
+
+  // Function to dynamically generate HTML for displaying additional books
+  function displayBookList() {
+      var bookListContainer = document.getElementById("bookList");
+
+      // Clear previous content
+      bookListContainer.innerHTML = "";
+
+      // Iterate over formData array to generate HTML for each book
+      formData.forEach(function(book, index) {
+        var listItem = document.createElement("div");
+        listItem.classList.add("book-item");
+        listItem.innerHTML = `
+            <h3>${book.title}</h3>
+            <p><strong>Authors:</strong> ${book.authors.join(", ")}</p>
+            <p><strong>Genres:</strong> ${book.genres.join(", ")}</p>
+            <p><strong>Rating:</strong> ${book.rating}</p>
+            <button onclick="openRatingModal(${index})" class="btn btn-primary">Rate</button>
+        `;
+        bookListContainer.appendChild(listItem);
+      });
+  }
+
+  // Function to open rating modal dialog
+  function openRatingModal(index) {
+      var modal = document.getElementById("ratingModal");
+      modal.style.display = "block";
+      modal.dataset.index = index; // Store the index of the book in the modal element
+  }
+
+  // Function to close rating modal dialog
+  function closeModal() {
+      var modal = document.getElementById("ratingModal");
+      modal.style.display = "none";
+  }
+
+  // Function to submit rating
+  function submitRating() {
+      var modal = document.getElementById("ratingModal");
+      var index = modal.dataset.index;
+      var ratingInput = document.getElementById("ratingInput").value;
+      // Perform validation on ratingInput
+      if (ratingInput >= 1 && ratingInput <= 10) {
+          console.log("Rating submitted:", ratingInput);
+          // Implement logic to handle the submitted rating
+          closeModal(); // Close the modal after rating is submitted
+      } else {
+          alert("Please enter a rating between 1 and 10.");
+      }
+  }
+
+  // Function to populate the Author(s) select element with unique entries
+function populateAuthorsSelect() {
+    var authorsSelect = document.getElementById("authorFilter");
+    var uniqueAuthors = [];
+    formData.forEach(function(book) {
+        book.authors.forEach(function(author) {
+            if (!uniqueAuthors.includes(author)) {
+                uniqueAuthors.push(author);
+                var option = document.createElement("option");
+                option.text = author;
+                option.value = author;
+                authorsSelect.add(option);
+            }
+        });
+    });
+}
+
+// Function to populate the Genre(s) select element with unique entries
+function populateGenresSelect() {
+    var genresSelect = document.getElementById("genreFilter");
+    var uniqueGenres = [];
+    formData.forEach(function(book) {
+        book.genres.forEach(function(genre) {
+            if (!uniqueGenres.includes(genre)) {
+                uniqueGenres.push(genre);
+                var option = document.createElement("option");
+                option.text = genre;
+                option.value = genre;
+                genresSelect.add(option);
+            }
+        });
+    });
+}
+
+// Call the functions to populate the Author(s) and Genre(s) select elements
+populateAuthorsSelect();
+populateGenresSelect();
+
+ // Function to apply filters and display filtered books
+ function applyFilters() {
+    var authorFilter = document.getElementById("authorFilter").value;
+    var genreFilter = document.getElementById("genreFilter").value;
+    var ratingFilter = document.getElementById("ratingFilter").value;
+
+    var filteredBooks = formData.filter(function(book) {
+      var authorsMatch = book.authors.includes(authorFilter);
+      var genresMatch = book.genres.includes(genreFilter);
+      var ratingMatch = parseInt(book.rating) > parseInt(ratingFilter);
+
+      return authorsMatch || genresMatch || ratingMatch;
+    });
+
+    displayFilteredBooks(filteredBooks);
+  }
+
+  // Function to display filtered books
+  function displayFilteredBooks(filteredBooks) {
+    var bookListContainer = document.getElementById("bookList");
+    bookListContainer.innerHTML = ""; // Clear previous content
+
+    console.log(bookListContainer);
+
+    filteredBooks.forEach(function(book, index) {
+      // console.log(book);
+      var listItem = document.createElement("div");
+      listItem.classList.add("book-item");
+      listItem.innerHTML = `
+          <h3>${book.title}</h3>
+          <p><strong>Authors:</strong> ${book.authors.join(", ")}</p>
+          <p><strong>Genres:</strong> ${book.genres.join(", ")}</p>
+          <p><strong>Rating:</strong> ${book.rating}</p>
+          <button onclick="openRatingModal(${index})" class="btn btn-primary">Rate</button>
+      `;
+      // console.log(listItem);
+      bookListContainer.appendChild(listItem);
+    });
+  }
+
+  // Function to reset filters
+  function resetFilters() {
+    // Reset all select elements to their default values
+    document.getElementById("authorFilter").selectedIndex = -1;
+    document.getElementById("genreFilter").selectedIndex = -1;
+    document.getElementById("ratingFilter").selectedIndex = 0;
+
+    // Apply filters to reset the book list
+    applyFilters();
+  }
+
+  // Call the function to display the additional books
+  displayBookList();
+</script>

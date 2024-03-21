@@ -1,17 +1,15 @@
 package com.sismics.books.core.dao.jpa.dto;
 
-import java.util.List;
-
 /**
  * Data Transfer Object for CommonLibraryBook.
  */
 public class CommonLibraryBookDto {
     private String id;
     private String title;
-    private List<String> authors;
-    private List<String> genres;
-    private Double rating;
-    private String thumbnailUrl;
+    private String authors;
+    private String genres;
+    private Integer totalRatings;
+    private Double averageRating;
 
     // Constructors, Getters, and Setters
 
@@ -34,35 +32,35 @@ public class CommonLibraryBookDto {
         this.title = title;
     }
 
-    public List<String> getAuthors() {
+    public String getAuthors() {
         return authors;
     }
 
-    public void setAuthors(List<String> authors) {
+    public void setAuthors(String authors) {
         this.authors = authors;
     }
 
-    public List<String> getGenres() {
+    public String getGenres() {
         return genres;
     }
 
-    public void setGenres(List<String> genres) {
+    public void setGenres(String genres) {
         this.genres = genres;
     }
 
-    public Double getRating() {
-        return rating;
+    public Integer getTotalRatings() {
+        return totalRatings;
     }
 
-    public void setRating(Double rating) {
-        this.rating = rating;
+    public void setTotalRatings(Integer totalRatings) {
+        this.totalRatings = totalRatings;
     }
 
-    public String getThumbnailUrl() {
-        return thumbnailUrl;
+    public Double getAverageRating() {
+        return averageRating;
     }
 
-    public void setThumbnailUrl(String thumbnailUrl) {
-        this.thumbnailUrl = thumbnailUrl;
+    public void setAverageRating(Double averageRating) {
+        this.averageRating = averageRating;
     }
 }

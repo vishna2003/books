@@ -20,11 +20,11 @@
             <input type="number" class="form-control" id="rating" min="1" max="10" required>
             <small class="form-text text-muted">Enter a numerical value between 1 and 10.</small>
         </div>
-        <div class="form-group">
+        <!-- <div class="form-group">
             <label for="thumbnailUrl">Thumbnail image URL:</label>
             <input type="text" class="form-control" id="thumbnailUrl">
             <small class="form-text text-muted">Optional field for the thumbnail image URL.</small>
-        </div>
+        </div> -->
         <button type="submit" class="btn btn-default">Submit</button>
     </form>
 </div>
@@ -42,9 +42,10 @@
         var authors = document.getElementById('authors').value.split(',').map(author => author.trim());
         var genres = document.getElementById('genres').value.split(',').map(genre => genre.trim());
         var rating = document.getElementById('rating').value;
-        var thumbnailUrl = document.getElementById('thumbnailUrl').value;
+        // var thumbnailUrl = document.getElementById('thumbnailUrl').value;
         // Add form data to formData array
-        formData.push({ title: title, authors: authors, genres: genres, rating: rating, thumbnailUrl: thumbnailUrl });
+        // formData.push({ title: title, authors: authors, genres: genres, rating: rating, thumbnailUrl: thumbnailUrl });
+        formData.push({ title: title, authors: authors, genres: genres, rating: rating });
         // Add page content to pageContent array
         pageContent.push(document.getElementById('bookForm').innerHTML);
         // Reset form fields
@@ -52,10 +53,10 @@
         document.getElementById('authors').value = '';
         document.getElementById('genres').value = '';
         document.getElementById('rating').value = '';
-        document.getElementById('thumbnailUrl').value = '';
+        // document.getElementById('thumbnailUrl').value = '';
         // Log form data and page content (for demonstration purposes)
         console.log('Form Data:', formData);
-        console.log('Page Content:', pageContent);
+        // console.log('Page Content:', pageContent);
     }
 
     // Add event listener to form submission

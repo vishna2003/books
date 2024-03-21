@@ -1,15 +1,11 @@
 package com.sismics.books.core.model.jpa;
 
-import javax.persistence.CollectionTable;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.Table;
-import java.util.List;
 
 @Entity
 @Table(name = "T_COMMON_LIBRARY_BOOK")
@@ -17,26 +13,27 @@ public class CommonLibraryBook {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "CLB_ID_C")
     private String id;
 
-    @Column(name = "clb_title_c")
+    @Column(name = "CLB_TITLE_C")
     private String title;
 
-    @Column(name = "clb_authors_c")
-    private String authors; // Comma-separated list
+    @Column(name = "CLB_AUTHORS_C")
+    private String authors;
 
-    @Column(name = "clb_genres_c")
-    private String genres; // Comma-separated list
+    @Column(name = "CLB_GENRES_C")
+    private String genres;
 
-    @Column(name = "clb_rating_n")
-    private Double rating;
+    @Column(name = "CLB_TOTAL_RATINGS")
+    private Integer totalRatings;
 
-    @Column(name = "clb_thumbnail_url_c")
-    private String thumbnailUrl;
+    @Column(name = "CLB_AVERAGE_RATING")
+    private Double averageRating;
 
     // Constructors
-    public CommonLibraryBook() {
-    }
+    // public CommonLibraryBook() {
+    // }
 
     // Getters and Setters
     public String getId() {
@@ -55,36 +52,36 @@ public class CommonLibraryBook {
         this.title = title;
     }
 
-    public List<String> getAuthors() {
+    public String getAuthors() {
         return authors;
     }
 
-    public void setAuthors(List<String> authors) {
+    public void setAuthors(String authors) {
         this.authors = authors;
     }
 
-    public List<String> getGenres() {
+    public String getGenres() {
         return genres;
     }
 
-    public void setGenres(List<String> genres) {
+    public void setGenres(String genres) {
         this.genres = genres;
     }
 
-    public Double getRating() {
-        return rating;
+    public Integer getTotalRatings() {
+        return totalRatings;
     }
 
-    public void setRating(Double rating) {
-        this.rating = rating;
+    public void setTotalRatings(Integer totalRatings) {
+        this.totalRatings = totalRatings;
     }
 
-    public String getThumbnailUrl() {
-        return thumbnailUrl;
+    public Double getAverageRating() {
+        return averageRating;
     }
 
-    public void setThumbnailUrl(String thumbnailUrl) {
-        this.thumbnailUrl = thumbnailUrl;
+    public void setAverageRating(Double averageRating) {
+        this.averageRating = averageRating;
     }
 
     // Additional methods like equals(), hashCode(), and toString() can be added as needed
